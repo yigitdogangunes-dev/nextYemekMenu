@@ -1,4 +1,3 @@
-// "use client" yok, bitti o iş!
 import HomeClient from "@/components/HomeClient";
 
 export const metadata = {
