@@ -15,20 +15,24 @@ export default function Home() {
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
 
   // 3. KAYIT MOTORU (Artık sadece UI/Arayüz işlerini yapıyor)
-  const handleSave = () => {
+  const handleSave = async () => { // async kelimesini ekliyoruz
     if (!selectedProfile) {
       setToast({ show: true, message: "Lütfen seçimleri kaydetmeden önce yukarıdan bir profil seçin!", type: "error" });
       return;
     }
 
-    // İŞTE BÜYÜ BURADA: Bütün o çirkin hesap kitap işini Utils'e postaladık!
-    saveOrderToStorage(selectedDate, selectedProfile, selectedFoods);
-    
-    // Aşağısı sadece Garsonun yapması gereken görsel işler:
-    setToast({ show: true, message: `Şahane! Seçimleriniz ${selectedProfile} profiline kaydedildi.`, type: "success" });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setSelectedProfile(null);
-    setSelectedFoods([]);
+    try {
+      // İşlemin bitmesini beklemek için await kullanıyoruz
+      await saveOrderToStorage(selectedDate, selectedProfile, selectedFoods);
+      
+      setToast({ show: true, message: `Şahane! Seçimleriniz ${selectedProfile} profiline kaydedildi.`, type: "success" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setSelectedProfile(null);
+      setSelectedFoods([]);
+    } catch (error) {
+      // Olası bir API hatasında kullanıcıyı bilgilendiriyoruz
+      setToast({ show: true, message: "Kaydedilirken bir hata oluştu!", type: "error" });
+    }
   };
 
   return (

@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { yemekVeritabani } from "@/constants/food-db"; 
+// DİKKAT: yemekVeritabani importunu sildik, çünkü artık json-server'dan gelecek!
 import { rastgeleSec } from "@/utils/choose-random";
 
 export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const [dailyMenu, setDailyMenu] = useState(null);
   const [loading, setLoading] = useState(true);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (!date) return;
@@ -15,14 +16,18 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
       setLoading(true);
       try {
         // 1. JSON Server'da bu tarihte menü var mı kontrol et
-        const response = await fetch(`http://localhost:4000/menus?date=${date}`);
+        const response = await fetch(`${API_URL}/menus?date=${date}`);
         const existingMenus = await response.json();
 
         if (existingMenus.length > 0) {
           // Menü zaten varsa, onu kullan
           setDailyMenu(existingMenus[0]);
         } else {
-          // Menü yoksa, yeni oluştur ve sunucuya kaydet
+          // 2. MENÜ YOKSA: Bütün yemek havuzunu (allFoods) veritabanından çek
+          const foodsResponse = await fetch(`${API_URL}/allFoods`);
+          const yemekVeritabani = await foodsResponse.json();
+
+          // 3. Çekilen havuzdan rastgele menü oluştur
           const newMenu = {
             date: date,
             corba: rastgeleSec(yemekVeritabani.corba, 2),
@@ -32,8 +37,8 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
             tatli: rastgeleSec(yemekVeritabani.tatli, 2)
           };
 
-          // JSON Server'a kaydet
-          const postResponse = await fetch("http://localhost:4000/menus", {
+          // 4. Oluşturulan yeni menüyü json-server'a kaydet
+          const postResponse = await fetch(`${API_URL}/menus`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newMenu)
@@ -44,16 +49,6 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         }
       } catch (error) {
         console.error("Menü yüklenirken hata:", error);
-        // Hata durumunda fallback: server'a bağlanamazsa, local'de oluştur
-        const fallbackMenu = {
-          date: date,
-          corba: rastgeleSec(yemekVeritabani.corba, 2),
-          anaYemek: rastgeleSec(yemekVeritabani.anaYemek, 3),
-          eslikci: rastgeleSec(yemekVeritabani.eslikci, 2),
-          soguk: rastgeleSec(yemekVeritabani.soguk, 2),
-          tatli: rastgeleSec(yemekVeritabani.tatli, 2)
-        };
-        setDailyMenu(fallbackMenu);
       } finally {
         setLoading(false);
       }
