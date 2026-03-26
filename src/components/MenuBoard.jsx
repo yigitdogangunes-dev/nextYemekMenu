@@ -6,24 +6,60 @@ import { rastgeleSec } from "@/utils/choose-random";
 
 export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const [dailyMenu, setDailyMenu] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!date) return;
 
-    let storedMenus = JSON.parse(localStorage.getItem('uretilenGunlukMenuler')) || {};
+    const fetchOrCreateMenu = async () => {
+      setLoading(true);
+      try {
+        // 1. JSON Server'da bu tarihte menü var mı kontrol et
+        const response = await fetch(`http://localhost:4000/menus?date=${date}`);
+        const existingMenus = await response.json();
 
-    if (!storedMenus[date]) {
-      storedMenus[date] = {
-        corba: rastgeleSec(yemekVeritabani.corba, 2),
-        anaYemek: rastgeleSec(yemekVeritabani.anaYemek, 3),
-        eslikci: rastgeleSec(yemekVeritabani.eslikci, 2),
-        soguk: rastgeleSec(yemekVeritabani.soguk, 2),
-        tatli: rastgeleSec(yemekVeritabani.tatli, 2)
-      };
-      localStorage.setItem('uretilenGunlukMenuler', JSON.stringify(storedMenus));
-    }
+        if (existingMenus.length > 0) {
+          // Menü zaten varsa, onu kullan
+          setDailyMenu(existingMenus[0]);
+        } else {
+          // Menü yoksa, yeni oluştur ve sunucuya kaydet
+          const newMenu = {
+            date: date,
+            corba: rastgeleSec(yemekVeritabani.corba, 2),
+            anaYemek: rastgeleSec(yemekVeritabani.anaYemek, 3),
+            eslikci: rastgeleSec(yemekVeritabani.eslikci, 2),
+            soguk: rastgeleSec(yemekVeritabani.soguk, 2),
+            tatli: rastgeleSec(yemekVeritabani.tatli, 2)
+          };
 
-    setDailyMenu(storedMenus[date]);
+          // JSON Server'a kaydet
+          const postResponse = await fetch("http://localhost:4000/menus", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newMenu)
+          });
+          
+          const savedMenu = await postResponse.json();
+          setDailyMenu(savedMenu);
+        }
+      } catch (error) {
+        console.error("Menü yüklenirken hata:", error);
+        // Hata durumunda fallback: server'a bağlanamazsa, local'de oluştur
+        const fallbackMenu = {
+          date: date,
+          corba: rastgeleSec(yemekVeritabani.corba, 2),
+          anaYemek: rastgeleSec(yemekVeritabani.anaYemek, 3),
+          eslikci: rastgeleSec(yemekVeritabani.eslikci, 2),
+          soguk: rastgeleSec(yemekVeritabani.soguk, 2),
+          tatli: rastgeleSec(yemekVeritabani.tatli, 2)
+        };
+        setDailyMenu(fallbackMenu);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrCreateMenu();
   }, [date]);
 
   // YEMEĞE TIKLAMA MOTORU (Varsayılan olarak 1 Porsiyon ekler)
@@ -64,7 +100,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
     setSelectedFoods(updatedFoods);
   };
 
-  if (!dailyMenu) {
+  if (!dailyMenu || loading) {
     return <div className="container" id="dinamik-menu-alani"></div>;
   }
 

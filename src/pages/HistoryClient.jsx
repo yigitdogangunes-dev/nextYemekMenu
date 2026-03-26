@@ -4,7 +4,8 @@ import Link from "next/link";
 import Calendar from "@/components/Calendar";
 // İŞTE YENİ MUHASEBECİMİZİ (HOOK) ÇAĞIRIYORUZ:
 import { useRecords } from "@/hooks/useRecords";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "@/components/ConfirmModal";
+import Image from "next/image";
 
 export default function HistoryClient() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -35,28 +36,19 @@ export default function HistoryClient() {
   };
 
   // 2. Onay kutusunda "Evet, Sil" derse gerçekten siler
-  const executeDelete = () => {
-    const updatedDayRecords = deleteRecord(confirmData.date, confirmData.index);
+  const executeDelete = async () => {
+    const updatedDayRecords = await deleteRecord(confirmData.date, confirmData.index);
     setModalData(prev => ({ ...prev, records: updatedDayRecords }));
     setConfirmData({ isOpen: false, date: null, index: null }); // Onay kutusunu kapat
   };
 
-  const handleDelete = (date, index) => {
-    // Hook'a "sil" diyoruz, o silip bize güncel listeyi veriyor
-    const updatedDayRecords = deleteRecord(date, index);
-    
-    // Eğer kullanıcı "İptal" demediyse modalı da güncelliyoruz
-    if (updatedDayRecords !== false) {
-      setModalData(prev => ({ ...prev, records: updatedDayRecords }));
-    }
-  };
 
   return (
     <>
       <div className="geridon">
         <div className="geridon__logo">
           <Link href="/">
-            <img src="/assets/arrow.png" alt="Geri Dön Logo" />
+            <Image src="/assets/arrow.png" alt="Geri Dön Logo" width={80} height={100} priority/>
           </Link>
         </div>
       </div>

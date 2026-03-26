@@ -23,6 +23,9 @@ const fugaz = Fugaz_One({
 export const metadata = {
   title: "Yemek Sipariş Sistemi",
   description: "Günlük yemek ve porsiyon seçim ekranı",
+  icons:{
+    icon: "/icon.png"
+  }
 };
 
 export default function RootLayout({ children }) {
