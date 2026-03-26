@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const useRecords = (currentDate) => {
   // Verileri mutfaktan çekip burada tutacağız
   const [rawRecords, setRawRecords] = useState([]);
 
+  
+
   // 1. MUTFAKTAN VERİLERİ ÇEKME MOTORU (GET)
   const fetchRecords = async () => {
+    
     try {
-      const response = await fetch("http://localhost:4000/records");
+      const response = await fetch(`${API_URL}/records`);
       const data = await response.json();
       setRawRecords(data); // Gelen veriyi hafızaya al
     } catch (error) {
@@ -41,7 +44,7 @@ export const useRecords = (currentDate) => {
 
     try {
       // Mutfağa "Bu ID'li siparişi yok et" diyoruz
-      await fetch(`http://localhost:4000/records/${recordToDelete.id}`, {
+      await fetch(`${API_URL}/records/${recordToDelete.id}`, {
         method: "DELETE"
       });
 
