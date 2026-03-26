@@ -1,0 +1,153 @@
+{
+  "records": [
+    {
+      "date": "2026-03-26",
+      "profile": "Mert",
+      "foods": [
+        {
+          "name": "Ezogelin Çorbası",
+          "basePrice": 80,
+          "price": 80,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Fırın Tavuk",
+          "basePrice": 230,
+          "price": 345,
+          "portion": 1.5,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Mevsim Salata",
+          "basePrice": 50,
+          "price": 25,
+          "portion": 0.5,
+          "category": "SOĞUK"
+        },
+        {
+          "name": "Bisküvili Pasta",
+          "basePrice": 100,
+          "price": 200,
+          "portion": 2,
+          "category": "TATLI"
+        }
+      ],
+      "id": "VKaQJUc3Wbs"
+    },
+    {
+      "date": "2026-03-26",
+      "profile": "Yigit",
+      "foods": [
+        {
+          "name": "Tavuk Suyu Çorbası",
+          "basePrice": 95,
+          "price": 142.5,
+          "portion": 1.5,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Kıymalı Çökertme Kebabı",
+          "basePrice": 250,
+          "price": 375,
+          "portion": 1.5,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Soslu Mantı",
+          "basePrice": 150,
+          "price": 150,
+          "portion": 1,
+          "category": "EŞLİKÇİ"
+        },
+        {
+          "name": "Yoğurt",
+          "basePrice": 50,
+          "price": 25,
+          "portion": 0.5,
+          "category": "SOĞUK"
+        },
+        {
+          "name": "Yer Fıstıklı Çıtır Muhallebi",
+          "basePrice": 140,
+          "price": 280,
+          "portion": 2,
+          "category": "TATLI"
+        }
+      ],
+      "id": "K1wBsaGcz6s"
+    }
+  ],
+  "menus": [
+    {
+      "date": "2026-03-26",
+      "corba": [
+        {
+          "isim": "Tavuk Suyu Çorbası",
+          "image": "/assets/tavuk-suyu.jpeg",
+          "fiyat": 95
+        },
+        {
+          "isim": "Ezogelin Çorbası",
+          "image": "/assets/ezogelin.jpg",
+          "fiyat": 80
+        }
+      ],
+      "anaYemek": [
+        {
+          "isim": "Patlıcan Musakka",
+          "image": "/assets/patlicanmusakka.jpg",
+          "fiyat": 260
+        },
+        {
+          "isim": "Karnıyarık",
+          "image": "/assets/karnıyarık.jpg",
+          "fiyat": 250
+        },
+        {
+          "isim": "Kıymalı Çökertme Kebabı",
+          "image": "/assets/kıymalıcokertme.jpg",
+          "fiyat": 250
+        }
+      ],
+      "eslikci": [
+        {
+          "isim": "Soslu Makarna",
+          "image": "/assets/soslumakarna.jpg",
+          "fiyat": 120
+        },
+        {
+          "isim": "Soslu Mantı",
+          "image": "/assets/soslumanti.jpg",
+          "fiyat": 150
+        }
+      ],
+      "soguk": [
+        {
+          "isim": "Yoğurt",
+          "image": "/assets/yogurt.jpg",
+          "fiyat": 50
+        },
+        {
+          "isim": "Mevsim Salata",
+          "image": "/assets/mevsim-salata.jpg",
+          "fiyat": 50
+        }
+      ],
+      "tatli": [
+        {
+          "isim": "İrmik Helvası",
+          "image": "/assets/irmikhelvasi.jpg",
+          "fiyat": 110
+        },
+        {
+          "isim": "Yer Fıstıklı Çıtır Muhallebi",
+          "image": "/assets/fistiklimuhallebi.jpg",
+          "fiyat": 140
+        }
+      ],
+      "id": "Dy00dGT3ykE"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

@@ -1,4 +1,4 @@
-import HomeClient from "@/components/HomeClient";
+import HomeClient from "@/pages/HomeClient";
 
 export const metadata = {
   title: "</kodpilot> Anasayfa",

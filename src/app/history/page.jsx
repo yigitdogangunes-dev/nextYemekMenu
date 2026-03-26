@@ -1,4 +1,4 @@
-import HistoryClient from "@/components/HistoryClient";
+import HistoryClient from "@/pages/HistoryClient";
 
 // SEO ve sayfa başlığı için bonus (Sadece Server Component'larda yapılabilir)
 export const metadata = {

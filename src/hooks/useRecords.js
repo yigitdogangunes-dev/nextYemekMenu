@@ -1,82 +1,87 @@
-"use client";
 import { useState, useEffect } from "react";
 
-export function useRecords(currentDate) {
-  const [records, setRecords] = useState({});
+export const useRecords = (currentDate) => {
+  // Verileri mutfaktan çekip burada tutacağız
+  const [rawRecords, setRawRecords] = useState([]);
 
-  // 1. VERİLERİ ÇEKME MOTORU
-  useEffect(() => {
-    const savedRecords = JSON.parse(localStorage.getItem('yemekKayitlari')) || {};
-    setRecords(savedRecords);
-  }, []);
-
-  // 2. SİLME MOTORU
-  // const deleteRecord = (date, indexToDelete) => {
-  //   const onay = window.confirm("Bu siparişi silmek istediğinize emin misiniz?");
-  //   if (!onay) return false; // İptal ederse false dön
-
-  //   const updatedRecords = { ...records };
-  //   updatedRecords[date] = updatedRecords[date].filter((_, idx) => idx !== indexToDelete);
-
-  //   if (updatedRecords[date].length === 0) {
-  //     delete updatedRecords[date];
-  //   }
-
-  //   setRecords(updatedRecords);
-  //   localStorage.setItem('yemekKayitlari', JSON.stringify(updatedRecords));
-    
-  //   // Silindikten sonra o günün güncel halini döndürüyoruz ki Modal da kendini güncellesin
-  //   return updatedRecords[date] || []; 
-  // };
-  
-  const deleteRecord = (date, indexToDelete) => {
-    const updatedRecords = { ...records };
-    updatedRecords[date] = updatedRecords[date].filter((_, idx) => idx !== indexToDelete);
-
-    if (updatedRecords[date].length === 0) {
-      delete updatedRecords[date];
+  // 1. MUTFAKTAN VERİLERİ ÇEKME MOTORU (GET)
+  const fetchRecords = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/records");
+      const data = await response.json();
+      setRawRecords(data); // Gelen veriyi hafızaya al
+    } catch (error) {
+      console.error("Muhasebeci mutfağa bağlanamadı patron:", error);
     }
-
-    setRecords(updatedRecords);
-    localStorage.setItem('yemekKayitlari', JSON.stringify(updatedRecords));
-    
-    return updatedRecords[date] || []; 
   };
 
-  // 3. AYLIK TOPLAM HESAPLAMA MOTORU
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-  const formattedMonthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+  // Dükkan açıldığında veya ay/tarih değiştiğinde verileri yenile
+  useEffect(() => {
+    fetchRecords();
+  }, [currentDate]);
 
+  // 2. GELEN VERİYİ TAKVİMİN İSTEDİĞİ FORMATA ÇEVİR
+  const records = {};
+  rawRecords.forEach(item => {
+    if (!records[item.date]) {
+      records[item.date] = [];
+    }
+    records[item.date].push({
+      id: item.id, // SİLMEK İÇİN BU ID ÇOK ÖNEMLİ ARTIK!
+      profil: item.profile,
+      yemekler: item.foods
+    });
+  });
+
+  // 3. SİLME MOTORU (DELETE)
+  const deleteRecord = async (date, index) => {
+    // UI bize tarih ve sıra numarası veriyor. Biz o kaydın ID'sini buluyoruz.
+    const recordToDelete = records[date][index];
+    if (!recordToDelete || !recordToDelete.id) return false;
+
+    try {
+      // Mutfağa "Bu ID'li siparişi yok et" diyoruz
+      await fetch(`http://localhost:4000/records/${recordToDelete.id}`, {
+        method: "DELETE"
+      });
+
+      // Başarıyla silindiyse, mutfaktaki yeni listeyi tekrar çek
+      fetchRecords();
+
+      // UI'daki açık olan onay kutusunu (Modal) güncellemek için kalanları döndür
+      const updatedDayRecords = records[date].filter((_, i) => i !== index);
+      return updatedDayRecords;
+
+    } catch (error) {
+      console.error("Silme hatası:", error);
+      return false;
+    }
+  };
+
+  // 4. AYLIK TOPLAM HESAPLAMALARI (Senin eski kusursuz matematiğin)
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
   const monthlyTotals = {};
+  let grandTotal = 0;
   let hasAnyRecordThisMonth = false;
 
   Object.keys(records).forEach(date => {
-    if (date.startsWith(formattedMonthPrefix)) {
-      records[date].forEach(record => {
-        hasAnyRecordThisMonth = true;
-        const profile = record.profil;
-        
-        let dailyTotal = 0;
-        record.yemekler.forEach(food => {
-          dailyTotal += Number(food.price);
-        });
+    const [yearStr, monthStr] = date.split('-');
+    const recordMonth = parseInt(monthStr, 10);
+    const recordYear = parseInt(yearStr, 10);
 
-        if (!monthlyTotals[profile]) monthlyTotals[profile] = 0;
-        monthlyTotals[profile] += dailyTotal;
+    if (recordMonth === currentMonth && recordYear === currentYear) {
+      hasAnyRecordThisMonth = true;
+      records[date].forEach(record => {
+        const dailyTotal = record.yemekler.reduce((sum, food) => sum + Number(food.price), 0);
+        if (!monthlyTotals[record.profil]) {
+          monthlyTotals[record.profil] = 0;
+        }
+        monthlyTotals[record.profil] += dailyTotal;
+        grandTotal += dailyTotal;
       });
     }
   });
 
-  // 4. GENEL TOPLAM
-  const grandTotal = Object.values(monthlyTotals).reduce((sum, amount) => sum + amount, 0);
-
-  // Sayfaya (Garsona) sadece şu sonuçları teslim et:
-  return {
-    records,
-    deleteRecord,
-    monthlyTotals,
-    hasAnyRecordThisMonth,
-    grandTotal
-  };
-}
+  return { records, deleteRecord, monthlyTotals, hasAnyRecordThisMonth, grandTotal };
+};

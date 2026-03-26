@@ -3,16 +3,9 @@ import { useState } from "react";
 import Link from "next/link"; 
 import ProfileSelector from "@/components/ProfileSelector";
 import MenuBoard from "@/components/MenuBoard";
-import Toast from "./Toast";
-
-// 1. TARİH MOTORU: Bileşenin dışında tanımlıyoruz ki her yerde güvenle çalışsın.
-const getTodayFormatted = () => {
-  const todayDate = new Date();
-  const year = todayDate.getFullYear();
-  const month = String(todayDate.getMonth() + 1).padStart(2, '0');
-  const day = String(todayDate.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
+import Toast from "@/components/Toast";
+import { getTodayFormatted } from "@/utils/date";
+import { saveOrderToStorage } from "@/utils/storage";
 
 export default function Home() {
   // 2. HAFIZA: Boş bırakmak yok! Direkt bugünün tarihiyle şak diye başlatıyoruz.
@@ -21,36 +14,19 @@ export default function Home() {
   const [selectedFoods, setSelectedFoods] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
 
-  // 3. KAYIT MOTORU
+  // 3. KAYIT MOTORU (Artık sadece UI/Arayüz işlerini yapıyor)
   const handleSave = () => {
     if (!selectedProfile) {
-      // ESKİ ALERT GİTTİ, YERİNE MODERN KIRMIZI TOAST GELDİ
-      setToast({ show: true, message: "Lütfen menüleri kaydetmeden önce yukarıdan bir profil seçin!", type: "error" });
+      setToast({ show: true, message: "Lütfen seçimleri kaydetmeden önce yukarıdan bir profil seçin!", type: "error" });
       return;
     }
 
-    let allRecords = JSON.parse(localStorage.getItem('yemekKayitlari')) || {};
+    // İŞTE BÜYÜ BURADA: Bütün o çirkin hesap kitap işini Utils'e postaladık!
+    saveOrderToStorage(selectedDate, selectedProfile, selectedFoods);
     
-    if (!allRecords[selectedDate]) {
-      allRecords[selectedDate] = [];
-    }
-
-    allRecords[selectedDate] = allRecords[selectedDate].filter(
-      record => record.profil !== selectedProfile
-    );
-
-    allRecords[selectedDate].push({
-      profil: selectedProfile,
-      yemekler: selectedFoods
-    });
-
-    localStorage.setItem('yemekKayitlari', JSON.stringify(allRecords));
-    
-    // ESKİ ALERT GİTTİ, YERİNE MODERN SARI TOAST GELDİ
+    // Aşağısı sadece Garsonun yapması gereken görsel işler:
     setToast({ show: true, message: `Şahane! Seçimleriniz ${selectedProfile} profiline kaydedildi.`, type: "success" });
-
     window.scrollTo({ top: 0, behavior: "smooth" });
-
     setSelectedProfile(null);
     setSelectedFoods([]);
   };
