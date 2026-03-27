@@ -1,41 +1,6 @@
 {
   "records": [
     {
-      "date": "2026-03-12",
-      "profile": "Enes",
-      "foods": [
-        {
-          "name": "Tavuk Suyu Çorbası",
-          "basePrice": 95,
-          "price": 142.5,
-          "portion": 1.5,
-          "category": "ÇORBA"
-        },
-        {
-          "name": "Kıymalı Ekmek Kebabı",
-          "basePrice": 240,
-          "price": 240,
-          "portion": 1,
-          "category": "ANA YEMEK"
-        },
-        {
-          "name": "Mevsim Salata",
-          "basePrice": 50,
-          "price": 100,
-          "portion": 2,
-          "category": "SOĞUK"
-        },
-        {
-          "name": "Bisküvili Pasta",
-          "basePrice": 100,
-          "price": 50,
-          "portion": 0.5,
-          "category": "TATLI"
-        }
-      ],
-      "id": "nfBvo6X78W4"
-    },
-    {
       "date": "2026-03-27",
       "profile": "Yigit",
       "foods": [
@@ -76,6 +41,209 @@
         }
       ],
       "id": "aW3e7FSeglE"
+    },
+    {
+      "date": "2026-03-27",
+      "profile": "Lamine",
+      "foods": [
+        {
+          "name": "Tavuk Suyu Çorbası",
+          "basePrice": 95,
+          "price": 95,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Karnıyarık",
+          "basePrice": 250,
+          "price": 250,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Soslu Mantı",
+          "basePrice": 150,
+          "price": 150,
+          "portion": 1,
+          "category": "EŞLİKÇİ"
+        },
+        {
+          "name": "İrmik Helvası",
+          "basePrice": 110,
+          "price": 110,
+          "portion": 1,
+          "category": "TATLI"
+        }
+      ],
+      "id": "LKDWhUexJW4"
+    },
+    {
+      "date": "2026-03-27",
+      "profile": "Mert",
+      "foods": [
+        {
+          "name": "Tavuk Suyu Çorbası",
+          "basePrice": 95,
+          "price": 95,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Patates Oturtma",
+          "basePrice": 220,
+          "price": 220,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Soslu Mantı",
+          "basePrice": 150,
+          "price": 225,
+          "portion": 1.5,
+          "category": "EŞLİKÇİ"
+        },
+        {
+          "name": "Tiramisu",
+          "basePrice": 140,
+          "price": 70,
+          "portion": 0.5,
+          "category": "TATLI"
+        }
+      ],
+      "id": "eMQhgswD6mc"
+    },
+    {
+      "date": "2026-03-27",
+      "profile": "deneme1",
+      "foods": [
+        {
+          "name": "Ezogelin Çorbası",
+          "basePrice": 80,
+          "price": 80,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Karnıyarık",
+          "basePrice": 250,
+          "price": 250,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Bulgur Pilavı",
+          "basePrice": 100,
+          "price": 100,
+          "portion": 1,
+          "category": "EŞLİKÇİ"
+        },
+        {
+          "name": "Mevsim Salata",
+          "basePrice": 50,
+          "price": 75,
+          "portion": 1.5,
+          "category": "SOĞUK"
+        }
+      ],
+      "id": "Lmb-t34Kduw"
+    },
+    {
+      "date": "2026-03-12",
+      "profile": "Lamine",
+      "foods": [
+        {
+          "name": "Mercimek Çorbası",
+          "basePrice": 70,
+          "price": 70,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Sebzeli Kıymalı Patlıcan Yemeği",
+          "basePrice": 230,
+          "price": 230,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        }
+      ],
+      "id": "UzH7hiYcxNk"
+    },
+    {
+      "date": "2026-03-12",
+      "profile": "Mert",
+      "foods": [
+        {
+          "name": "Mercimek Çorbası",
+          "basePrice": 70,
+          "price": 70,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Sebzeli Kıymalı Patlıcan Yemeği",
+          "basePrice": 230,
+          "price": 230,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        }
+      ],
+      "id": "glGsAYsBxEw"
+    },
+    {
+      "date": "2026-03-12",
+      "profile": "denemeeeeeeeeeeee2",
+      "foods": [
+        {
+          "name": "Mercimek Çorbası",
+          "basePrice": 70,
+          "price": 70,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Kıymalı Ekmek Kebabı",
+          "basePrice": 240,
+          "price": 240,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        }
+      ],
+      "id": "n1yz66lNnbI"
+    },
+    {
+      "date": "2026-03-12",
+      "profile": "Enes",
+      "foods": [
+        {
+          "name": "Mercimek Çorbası",
+          "basePrice": 70,
+          "price": 70,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Kıymalı Ekmek Kebabı",
+          "basePrice": 240,
+          "price": 240,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        }
+      ],
+      "id": "-r-drjahXno"
+    },
+    {
+      "date": "2026-03-27",
+      "profile": "denemeeeeeeeeeeee2",
+      "foods": [
+        {
+          "name": "Ezogelin Çorbası",
+          "basePrice": 80,
+          "price": 40,
+          "portion": 0.5,
+          "category": "ÇORBA"
+        }
+      ],
+      "id": "7fpnt_P-Cps"
     }
   ],
   "menus": [

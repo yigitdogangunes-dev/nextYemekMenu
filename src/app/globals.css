@@ -373,11 +373,13 @@ body {
   gap: 15px;
 }
 
-.takvim-izgara div {
+/* Sadece ana gün kutularını hedefler (içerideki div'leri bozmaz) */
+.takvim-izgara > div {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
-  min-height: 120px; 
+  height: 130px; /* min-height SİLİNDİ, yerine kesin height eklendi. Artık UZAYAMAZ! */
+  overflow-y: auto; /* İsimler sığmazsa aşağı doğru kaydırma çubuğu çıkarır */
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -385,6 +387,25 @@ body {
   cursor: pointer;
   font-family: var(--font-rajdhani);
   font-weight: bold;
+}
+/* Kaydırma çubuğunun kapladığı alanı artırıyoruz (İçeriye doğru itebilmek için boşluk lazım) */
+.takvim-izgara > div::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Çubuğun ilerlediği ray (Track) - üst ve alt köşelere değmesin diye margin veriyoruz */
+.takvim-izgara > div::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0; 
+}
+
+/* Kaydırdığımız sarı çubuk (Thumb) */
+.takvim-izgara > div::-webkit-scrollbar-thumb {
+  background-color: #ffcc00;
+  border-radius: 10px;
+  /* Kendi etrafına şeffaf bir duvar örüp çubuğu sağ çerçeveden uzaklaştırıyoruz */
+  border: 4px solid transparent; 
+  background-clip: padding-box;
 }
 
 .takvim-izgara div:not(.bos-kutu):hover {
