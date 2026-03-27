@@ -1,5 +1,83 @@
 {
-  "records": [],
+  "records": [
+    {
+      "date": "2026-03-12",
+      "profile": "Enes",
+      "foods": [
+        {
+          "name": "Tavuk Suyu Çorbası",
+          "basePrice": 95,
+          "price": 142.5,
+          "portion": 1.5,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Kıymalı Ekmek Kebabı",
+          "basePrice": 240,
+          "price": 240,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Mevsim Salata",
+          "basePrice": 50,
+          "price": 100,
+          "portion": 2,
+          "category": "SOĞUK"
+        },
+        {
+          "name": "Bisküvili Pasta",
+          "basePrice": 100,
+          "price": 50,
+          "portion": 0.5,
+          "category": "TATLI"
+        }
+      ],
+      "id": "nfBvo6X78W4"
+    },
+    {
+      "date": "2026-03-27",
+      "profile": "Yigit",
+      "foods": [
+        {
+          "name": "Tavuk Suyu Çorbası",
+          "basePrice": 95,
+          "price": 95,
+          "portion": 1,
+          "category": "ÇORBA"
+        },
+        {
+          "name": "Patates Oturtma",
+          "basePrice": 220,
+          "price": 220,
+          "portion": 1,
+          "category": "ANA YEMEK"
+        },
+        {
+          "name": "Soslu Mantı",
+          "basePrice": 150,
+          "price": 300,
+          "portion": 2,
+          "category": "EŞLİKÇİ"
+        },
+        {
+          "name": "Yoğurt",
+          "basePrice": 50,
+          "price": 25,
+          "portion": 0.5,
+          "category": "SOĞUK"
+        },
+        {
+          "name": "İrmik Helvası",
+          "basePrice": 110,
+          "price": 165,
+          "portion": 1.5,
+          "category": "TATLI"
+        }
+      ],
+      "id": "aW3e7FSeglE"
+    }
+  ],
   "menus": [
     {
       "date": "2026-03-26",
@@ -276,6 +354,144 @@
         }
       ],
       "id": "Rc90G7CxU9A"
+    },
+    {
+      "date": "2026-03-27",
+      "corba": [
+        {
+          "isim": "Tavuk Suyu Çorbası",
+          "image": "/assets/tavuk-suyu.jpeg",
+          "fiyat": 95
+        },
+        {
+          "isim": "Ezogelin Çorbası",
+          "image": "/assets/ezogelin.jpg",
+          "fiyat": 80
+        }
+      ],
+      "anaYemek": [
+        {
+          "isim": "Patates Oturtma",
+          "image": "/assets/patatesoturtma.jpg",
+          "fiyat": 220
+        },
+        {
+          "isim": "Karnıyarık",
+          "image": "/assets/karnıyarık.jpg",
+          "fiyat": 250
+        },
+        {
+          "isim": "Sebzeli Kıymalı Patlıcan Yemeği",
+          "image": "/assets/sebzelikiymalipatlican.jpg",
+          "fiyat": 230
+        }
+      ],
+      "eslikci": [
+        {
+          "isim": "Bulgur Pilavı",
+          "image": "/assets/bulgurpilavi.jpg",
+          "fiyat": 100
+        },
+        {
+          "isim": "Soslu Mantı",
+          "image": "/assets/soslumanti.jpg",
+          "fiyat": 150
+        }
+      ],
+      "soguk": [
+        {
+          "isim": "Mevsim Salata",
+          "image": "/assets/mevsim-salata.jpg",
+          "fiyat": 50
+        },
+        {
+          "isim": "Yoğurt",
+          "image": "/assets/yogurt.jpg",
+          "fiyat": 50
+        }
+      ],
+      "tatli": [
+        {
+          "isim": "Tiramisu",
+          "image": "/assets/tiramisu.jpg",
+          "fiyat": 140
+        },
+        {
+          "isim": "İrmik Helvası",
+          "image": "/assets/irmikhelvasi.jpg",
+          "fiyat": 110
+        }
+      ],
+      "id": "RAn5XnaED4s"
+    },
+    {
+      "date": "2026-03-12",
+      "corba": [
+        {
+          "isim": "Mercimek Çorbası",
+          "image": "/assets/mercimek.jpg",
+          "fiyat": 70
+        },
+        {
+          "isim": "Tavuk Suyu Çorbası",
+          "image": "/assets/tavuk-suyu.jpeg",
+          "fiyat": 95
+        }
+      ],
+      "anaYemek": [
+        {
+          "isim": "Kıymalı Ekmek Kebabı",
+          "image": "/assets/kıymalıekmekkebabı.jpg",
+          "fiyat": 240
+        },
+        {
+          "isim": "Sebzeli Kıymalı Patlıcan Yemeği",
+          "image": "/assets/sebzelikiymalipatlican.jpg",
+          "fiyat": 230
+        },
+        {
+          "isim": "Salçalı Köfte",
+          "image": "/assets/salcalikofte.jpg",
+          "fiyat": 250
+        }
+      ],
+      "eslikci": [
+        {
+          "isim": "Soslu Makarna",
+          "image": "/assets/soslumakarna.jpg",
+          "fiyat": 120
+        },
+        {
+          "isim": "Soslu Spagetti",
+          "image": "/assets/sosluspagetti.jpg",
+          "fiyat": 130
+        }
+      ],
+      "soguk": [
+        {
+          "isim": "Çoban Salata",
+          "image": "/assets/coban-salata.jpg",
+          "fiyat": 60
+        },
+        {
+          "isim": "Mevsim Salata",
+          "image": "/assets/mevsim-salata.jpg",
+          "fiyat": 50
+        }
+      ],
+      "tatli": [
+        {
+          "isim": "Tiramisu",
+          "image": "/assets/tiramisu.jpg",
+          "fiyat": 140
+        },
+        {
+          "isim": "Bisküvili Pasta",
+          "image": "/assets/biskuvipasta.jpg",
+          "fiyat": 100
+        }
+      ],
+      "id": "cUgKnLoVohM"
     }
   ],
   "allFoods": {

@@ -1,13 +1,12 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-// DİKKAT: yemekVeritabani importunu sildik, çünkü artık json-server'dan gelecek!
 import { rastgeleSec } from "@/utils/choose-random";
+import { API } from "@/services/api"; 
 
 export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const [dailyMenu, setDailyMenu] = useState(null);
   const [loading, setLoading] = useState(true);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (!date) return;
@@ -15,19 +14,17 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
     const fetchOrCreateMenu = async () => {
       setLoading(true);
       try {
-        // 1. JSON Server'da bu tarihte menü var mı kontrol et
-        const response = await fetch(`${API_URL}/menus?date=${date}`);
-        const existingMenus = await response.json();
+        //  "Bu tarihte menü var mı?"
+        const existingMenus = await API.getMenuByDate(date);
 
         if (existingMenus.length > 0) {
           // Menü zaten varsa, onu kullan
           setDailyMenu(existingMenus[0]);
         } else {
-          // 2. MENÜ YOKSA: Bütün yemek havuzunu (allFoods) veritabanından çek
-          const foodsResponse = await fetch(`${API_URL}/allFoods`);
-          const yemekVeritabani = await foodsResponse.json();
+          // 2. Menü yoksa, tüm yemek havuzunu (allFoods) getirttir
+          const yemekVeritabani = await API.getAllFoods();
 
-          // 3. Çekilen havuzdan rastgele menü oluştur
+          // 3. Havuzdan rastgele yeni bir menü oluştur
           const newMenu = {
             date: date,
             corba: rastgeleSec(yemekVeritabani.corba, 2),
@@ -37,14 +34,8 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
             tatli: rastgeleSec(yemekVeritabani.tatli, 2)
           };
 
-          // 4. Oluşturulan yeni menüyü json-server'a kaydet
-          const postResponse = await fetch(`${API_URL}/menus`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newMenu)
-          });
-          
-          const savedMenu = await postResponse.json();
+          // 4."Bu yeni menüyü veritabanına kaydet" de
+          const savedMenu = await API.saveDailyMenu(newMenu);
           setDailyMenu(savedMenu);
         }
       } catch (error) {
@@ -125,7 +116,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                 alt={y.isim} 
                 width={250} 
                 height={250} 
-                // Senin CSS'indeki object-fit ve border-radius ayarlarının bozulmaması için
+                priority
                 style={{ objectFit: 'cover', borderRadius: '7px' }} 
                 />
               
