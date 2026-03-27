@@ -59,24 +59,34 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
               className={`takvim-gunu ${isFuture ? 'gelecek-gun' : ''} ${isToday ? 'bugun' : ''}`}
               data-tarih={fullDate}
               onClick={() => onDayClick(fullDate, dayRecords)}
-              style={{ cursor: 'pointer', overflow: 'hidden' }} // Kutu dışına taşmayı kesin yasaklar
+              // DİKKAT: Buradaki overflow: hidden ve style kısmını tamamen sildik, CSS'e devrettik.
             >
               <span className="gun-numarasi">{day}</span>
               
               {hasOrders && (
-                <div className="gun-notu" style={{ width: '100%', overflow: 'hidden' }}>
+                <div className="gun-notu" style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {orderProfiles.map((name, idx) => {
                     
-                    // 10 harften uzunsa kes ve ".." ekle
                     const shortName = name.length > 10 ? name.substring(0, 10) + ".." : name;
                     
                     return (
                       <span 
                         key={idx} 
-                        title={name} // Fareyle üstünde durunca orjinal uzun isim çıkar
-                        style={{ display: 'block', whiteSpace: 'nowrap' }} // Yazının alt satıra geçip takvimi bozmasını engeller
+                        title={name} 
+                        style={{ 
+                          display: 'inline-block', 
+                          whiteSpace: 'nowrap',
+                          backgroundColor: 'rgba(255, 204, 0, 0.15)', // Şık bir sarı arka plan
+                          color: '#ffcc00', // Sarı yazı
+                          border: '1px solid rgba(255, 204, 0, 0.4)',
+                          padding: '2px 6px', // Etiket gibi görünmesi için daraltıldı
+                          borderRadius: '4px',
+                          fontSize: '13px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }} 
                       >
-                        {shortName}
+                        👤 {shortName}
                       </span>
                     );
                   })}
