@@ -1,33 +1,23 @@
-// Ortam değişkenini dosyanın en başında bir sabite alıyoruz
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// src/utils/storage.js
+import { API } from "@/services/api";
 
-// Yeni siparişi alıp telsizle (HTTP POST) gerçek mutfağa gönderen motor
+// Yeni siparişi alıp API servisi üzerinden mutfağa gönderen motor
 export const saveOrderToStorage = async (date, profile, foods) => {
   try {
-    // 1. Önce mutfağa soralım: "Bugün bu profile ait eski bir sipariş var mı?"
-    const checkResponse = await fetch(`${API_URL}/records?date=${date}&profile=${profile}`);
-    const existingRecords = await checkResponse.json();
+    // 1. Önce Şef Garson'a soralım: "Bugün bu profile ait eski bir sipariş var mı?"
+    const existingRecords = await API.checkExistingOrder(date, profile);
 
-    // 2. Eğer varsa, o eski siparişi mutfaktan silelim (üstüne yazma mantığı)
+    // 2. Eğer varsa, o eski siparişi silelim
     if (existingRecords.length > 0) {
       const oldRecordId = existingRecords[0].id;
-      await fetch(`${API_URL}/records/${oldRecordId}`, {
-        method: "DELETE"
-      });
+      await API.deleteOrder(oldRecordId);
     }
 
-    // 3. Şimdi yepyeni siparişimizi mutfağa (json-server) fırlatalım
-    await fetch(`${API_URL}/records`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // Veritabanına gidecek olan Jilet gibi veri yapımız
-      body: JSON.stringify({
-        date: date,
-        profile: profile,
-        foods: foods
-      }),
+    // 3. Şimdi yepyeni siparişimizi kaydetmesi için Şef Garson'a verelim
+    await API.saveOrder({
+      date: date,
+      profile: profile,
+      foods: foods
     });
 
   } catch (error) {
