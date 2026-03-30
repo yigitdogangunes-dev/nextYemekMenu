@@ -673,3 +673,91 @@ html {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+/* ========================================= */
+/* 📱 MOBİL UYUMLULUK (RESPONSIVE) AYARLARI  */
+/* ========================================= */
+
+@media (max-width: 768px) {
+    /* 1. Yemek Kartları ve Tıklanabilirlik */
+    .list > div {
+        width: 100%; /* Kartlar telefonda ekranı tam kaplasın */
+        max-width: 350px; /* Çok da esnemesin */
+        cursor: pointer; /* iPhone/Safari'nin "bu bir butondur" diye anlaması için ŞART */
+        -webkit-tap-highlight-color: transparent; /* Mobilde tıklayınca çıkan çirkin mavi yanmayı kapatır */
+    }
+
+    /* 2. Resim Boyutları */
+    .list img {
+        width: 100%; /* Resimler kartın dışına taşmasın */
+        height: auto;
+    }
+
+    /* 3. Profillerin Sıkışmasını Engelleme */
+    .profile {
+        gap: 15px; /* Profiller arası boşluğu daralt */
+    }
+    
+    .profile div {
+        padding: 10px 20px 10px 10px; /* İçi boşlukları küçült */
+        width: 100%; /* Telefondaysa profiller de alt alta geniş dursun */
+        max-width: 300px;
+        justify-content: flex-start; /* İçerik soldan başlasın */
+    }
+
+    /* 4. Başlıklar ve Metinler */
+    .kategori-bolumu h2 {
+        font-size: 26px; /* Başlıkları biraz küçült */
+    }
+    
+    .secim-mesaji {
+        font-size: 18px; /* Mesajı ekrana sığdır */
+        margin: 30px 10px;
+    }
+
+    /* 5. Geri Dön ve Diğer Logolar */
+    .logo, .geridon__logo {
+        top: 10px; /* Telefondaysa çok aşağıda kalmasınlar */
+        right: 10px;
+    }
+    
+    .geridon__logo {
+        left: 10px; /* Geri dön butonu ekranın sol dışına taşmasın */
+    }
+
+    .logo img, .geridon__logo img {
+        width: 60px; /* Mobilde logolar devasa kalmasın */
+    }
+
+    /* 6. Tarih Seçici (Input Date) */
+    .tarih input[type="date"] {
+        width: 90%; /* Kutuyu ekrana sığdır */
+        font-size: 24px;
+    }
+
+    /* 7. Takvim Sayfası (History) Mobil Düzeni */
+    .takvim-ust-bilgi {
+        flex-direction: column; /* Ay ismi ve butonları alt alta al */
+        gap: 15px;
+    }
+    
+    .takvim-izgara {
+        gap: 5px; /* Takvim kutuları arası boşluğu azalt */
+    }
+    
+    .takvim-izgara > div {
+        height: 80px; /* Kutuların boyunu kısalt */
+        padding: 5px;
+        font-size: 12px; /* İçindeki yazıları küçült */
+    }
+    
+    .takvim-gun-isimleri {
+        font-size: 14px; /* Gün isimlerini (Pzt, Sal...) küçült */
+    }
+
+    /* 8. Toplam Harcama Tablosu */
+    .profilToplam {
+        max-width: 95%; /* Telefondaysa kutu genişlesin */
+        padding: 15px;
+    }
+}

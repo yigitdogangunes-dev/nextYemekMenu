@@ -18,7 +18,7 @@ export const useRecords = (currentDate) => {
         records[item.date] = [];
       }
       records[item.date].push({
-        id: item.id, 
+        _id: item._id, 
         profil: item.profile,
         yemekler: item.foods
       });
@@ -28,11 +28,11 @@ export const useRecords = (currentDate) => {
   // 2. SİLME MOTORU (DELETE)
   const deleteRecord = async (date, index) => {
     const recordToDelete = records[date][index];
-    if (!recordToDelete || !recordToDelete.id) return false;
+    if (!recordToDelete || !recordToDelete._id) return false;
 
     try {
       // Şef Garson'a sildir
-      await API.deleteOrder(recordToDelete.id);
+      await API.deleteOrder(recordToDelete._id);
 
       // SWR'ye "Veritabanı değişti, arka planda çaktırmadan yeni listeyi çek" emrini veriyoruz (MUTATE)
       mutate(); 
