@@ -35,10 +35,16 @@ export default function HistoryClient() {
     setConfirmData({ isOpen: true, date: date, index: index });
   };
 
-  // 2. Onay kutusunda "Evet, Sil" derse gerçekten siler
   const executeDelete = async () => {
     const updatedDayRecords = await deleteRecord(confirmData.date, confirmData.index);
-    setModalData(prev => ({ ...prev, records: updatedDayRecords }));
+    
+    // EĞER SİLME BAŞARILIYSA (false dönmediyse) listeyi güncelle
+    if (updatedDayRecords !== false) {
+      setModalData(prev => ({ ...prev, records: updatedDayRecords }));
+    } else {
+      alert("Silme işlemi başarısız oldu! Lütfen sayfayı yenileyip tekrar deneyin.");
+    }
+    
     setConfirmData({ isOpen: false, date: null, index: null }); // Onay kutusunu kapat
   };
 
