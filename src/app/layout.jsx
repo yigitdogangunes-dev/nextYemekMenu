@@ -1,5 +1,6 @@
 import { Bebas_Neue, Rajdhani, Fugaz_One } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Fontları indirip değişkene atıyoruz
 const bebas = Bebas_Neue({ 
@@ -30,9 +31,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    // Font değişkenlerini tüm HTML'e enjekte ediyoruz
-    <html lang="tr" className={`${bebas.variable} ${rajdhani.variable} ${fugaz.variable}`} data-scroll-behavior="smooth">
-      <body>{children}</body>
+    // suppressHydrationWarning prevents mismatch errors caused by next-themes injecting classes on load
+    <html lang="tr" suppressHydrationWarning className={`${bebas.variable} ${rajdhani.variable} ${fugaz.variable}`} data-scroll-behavior="smooth">
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

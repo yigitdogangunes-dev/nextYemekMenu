@@ -11,24 +11,14 @@ export default function Toast({ message, type = "success", onClose }) {
   }, [onClose]);
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: '20px',
-      right: '20px',
-      backgroundColor: type === "error" ? "#ff4444" : "#ffcc00",
-      color: type === "error" ? "#fff" : "#000",
-      padding: '15px 25px',
-      borderRadius: '8px',
-      fontWeight: 'bold',
-      fontFamily: 'var(--font-rajdhani)',
-      fontSize: '20px',
-      zIndex: 99999,
-      boxShadow: '0 4px 15px rgba(0,0,0,0.4)',
-      animation: 'slideIn 0.3s ease-out'
-    }}>
+    <div 
+      className={`fixed top-5 right-5 px-8 py-4 rounded-2xl font-rajdhani text-xl font-bold z-[99999] shadow-2xl transition-all animate-slideIn backdrop-blur-md border border-white/20
+        ${type === "error" 
+          ? "bg-red-500 text-white shadow-red-500/20" 
+          : "bg-primary text-white shadow-primary/20"
+        }`}
+    >
       {type === "error" ? "⚠️ " : "✅ "} {message}
-      
-      {/* Sağdan kayarak gelme animasyonu */}
       <style>{`
         @keyframes slideIn {
           from { transform: translateX(100%); opacity: 0; }
