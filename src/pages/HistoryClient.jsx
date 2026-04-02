@@ -115,6 +115,7 @@ export default function HistoryClient() {
               setCurrentDate={setCurrentDate}
               records={records}
               onDayClick={handleDayClick}
+              min="2026-01-01"
             />
           </div>
 

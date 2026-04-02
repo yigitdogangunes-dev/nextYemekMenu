@@ -166,9 +166,6 @@ export default function Home() {
 
             {/* DATE SELECTOR SECTION */}
             <div className="flex flex-col items-center md:items-end gap-3">
-              <label className="font-bebas text-3xl text-gray-600 dark:text-gray-400 tracking-widest uppercase mb-1 transition-colors duration-700">
-                Servis Tarihi
-              </label>
               <DatePicker
                 value={selectedDate}
                 onChange={setSelectedDate}

@@ -77,13 +77,18 @@ export default function DatePicker({ value, onChange, min, max, compact = false 
   };
 
   const prevMonth = () => {
+    if (isPrevMonthDisabled) return;
     if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
     else setViewMonth(m => m - 1);
   };
   const nextMonth = () => {
+    if (isNextMonthDisabled) return;
     if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
     else setViewMonth(m => m + 1);
   };
+
+  const isPrevMonthDisabled = minDate && (viewYear < minDate.getFullYear() || (viewYear === minDate.getFullYear() && viewMonth <= minDate.getMonth()));
+  const isNextMonthDisabled = maxDate && (viewYear > maxDate.getFullYear() || (viewYear === maxDate.getFullYear() && viewMonth >= maxDate.getMonth()));
 
   const isDayDisabled = (day) => {
     const d = new Date(viewYear, viewMonth, day);
@@ -111,13 +116,25 @@ export default function DatePicker({ value, onChange, min, max, compact = false 
           className="z-[300] w-[360px] md:w-[400px] bg-white/95 dark:bg-[#111111]/95 backdrop-blur-3xl border border-gray-200 dark:border-white/10 rounded-[28px] shadow-[0_30px_60px_rgba(0,0,0,0.2)] dark:shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden"
         >
           <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-white/5">
-            <button onClick={prevMonth} className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-primary dark:hover:bg-primary-dark hover:text-white transition-colors text-lg font-bold">
+            <button 
+              onClick={prevMonth} 
+              disabled={isPrevMonthDisabled}
+              className={`w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors text-lg font-bold
+                ${isPrevMonthDisabled ? 'opacity-10 cursor-not-allowed grayscale' : 'hover:bg-primary dark:hover:bg-primary-dark hover:text-white'}
+              `}
+            >
               &#10094;
             </button>
             <div className="font-bebas text-3xl tracking-widest text-gray-800 dark:text-white">
               {MONTHS[viewMonth]} {viewYear}
             </div>
-            <button onClick={nextMonth} className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-primary dark:hover:bg-primary-dark hover:text-white transition-colors text-lg font-bold">
+            <button 
+              onClick={nextMonth} 
+              disabled={isNextMonthDisabled}
+              className={`w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors text-lg font-bold
+                ${isNextMonthDisabled ? 'opacity-10 cursor-not-allowed grayscale' : 'hover:bg-primary dark:hover:bg-primary-dark hover:text-white'}
+              `}
+            >
               &#10095;
             </button>
           </div>

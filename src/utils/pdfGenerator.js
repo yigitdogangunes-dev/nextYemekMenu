@@ -74,62 +74,81 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
   doc.setLineWidth(1);
   doc.line(40, 110, pageWidth - 40, 110);
 
-  // --- SUMMARY BOX ---
-  doc.setFillColor(248, 250, 252);
-  doc.roundedRect(40, 130, pageWidth - 80, 85, 8, 8, "FD");
+  // --- SUMMARY BOX (Dynamic Grid) ---
+  const profiles = Object.keys(monthlyTotals || {});
+  const maxPerRow = 3;
+  const profileRows = Math.max(1, Math.ceil(profiles.length / maxPerRow));
+  const rowHeight = 20;
 
+  // Layout anchors - everything chains from boxTop
+  const boxTop = 130;
+  const titleY = boxTop + 20;                              // "Aylık Profil Özetleri"
+  const firstProfileY = titleY + 22;                       // İlk profil satırı
+  const lastProfileY = firstProfileY + (profileRows - 1) * rowHeight;
+  const separatorY = lastProfileY + 14;                    // İnce çizgi
+  const totalTextY = separatorY + 16;                      // "Genel Toplam"
+  const boxBottom = totalTextY + 12;                       // Kutu alt kenarı
+  const boxHeight = boxBottom - boxTop;
+
+  // Kutu çiz
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(40, boxTop, pageWidth - 80, boxHeight, 8, 8, "FD");
+
+  // Başlık
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
-  doc.text(tr("Aylik Profil Ozetleri"), 55, 150);
+  doc.text(tr("Aylik Profil Ozetleri"), 55, titleY);
 
+  // Profil isimleri
   doc.setFont("helvetica", "normal");
   doc.setTextColor(71, 85, 105);
   doc.setFontSize(11);
 
-  // DYNAMICALLY RENDER ALL PROFILES FOUND IN MONTHLY TOTALS
-  const profiles = Object.keys(monthlyTotals || {});
-  let currentX = 55;
   let grandTotal = 0;
+  const colWidth = (pageWidth - 120) / maxPerRow;
 
-  profiles.forEach((profile) => {
+  profiles.forEach((profile, idx) => {
+    const row = Math.floor(idx / maxPerRow);
+    const col = idx % maxPerRow;
+    const x = 55 + col * colWidth;
+    const y = firstProfileY + row * rowHeight;
+
     const capitalizedProfile = profile.charAt(0).toUpperCase() + profile.slice(1);
     const total = monthlyTotals[profile] || 0;
-    doc.text(`${tr(capitalizedProfile)}: ${total} TL`, currentX, 175);
-    currentX += 105; // horizontal spacing between stats
+    doc.text(`${tr(capitalizedProfile)}: ${total} TL`, x, y);
     grandTotal += total;
   });
 
   if (profiles.length === 0) {
-    doc.text(tr("Gosterilecek profil verisi yok."), currentX, 175);
+    doc.text(tr("Gosterilecek profil verisi yok."), 55, firstProfileY);
   }
-  
-  // Araya estetik ve ince bir çizgi atıp Genel Toplam'ı alt satıra alıyoruz
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(226, 232, 240); // Slate-200
-  doc.line(55, 188, pageWidth - 55, 188);
 
+  // Ayırıcı çizgi
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(226, 232, 240);
+  doc.line(55, separatorY, pageWidth - 55, separatorY);
+
+  // Genel Toplam
   doc.setFont("helvetica", "bold");
   doc.setTextColor(15, 23, 42);
   doc.setFontSize(13);
-  doc.text(`Genel Toplam: ${grandTotal} TL`, pageWidth - 55, 205, { align: "right" });
+  doc.text(`Genel Toplam: ${grandTotal} TL`, pageWidth - 55, totalTextY, { align: "right" });
 
   // --- DATATABLE SECTION (TIMELINE) ---
+  const tableStartY = boxBottom + 25; // Tabloyu kutunun 25pt altından başlat
   const tableRows = [];
 
   // Filter keys matching current month/year and sort ascending
   const monthDates = Object.keys(recordsObj || {}).filter(dateString => {
-    const parts = dateString.split("-"); // YYYY-MM-DD
+    const parts = dateString.split("-");
     if (parts.length < 3) return false;
     return parseInt(parts[0], 10) === currentYear && parseInt(parts[1], 10) === currentMonthNum;
   }).sort((a, b) => new Date(a) - new Date(b));
 
   monthDates.forEach(dateStr => {
-    const [y, m, d] = dateStr.split("-");
     const dObj = new Date(dateStr);
     const formattedDate = dObj.toLocaleDateString("tr-TR", { day: '2-digit', month: '2-digit', year: 'numeric' });
-    
-    // items is an array: [ { _id, profil: "yigit", yemekler: [] }, ... ]
     const items = recordsObj[dateStr] || [];
     
     items.forEach(record => {
@@ -149,10 +168,10 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
   if (tableRows.length === 0) {
     doc.setFont("helvetica", "italic");
     doc.setFontSize(11);
-    doc.text(tr("Bu ay hic harcama verisi bulunamadi."), 40, 230);
+    doc.text(tr("Bu ay hic harcama verisi bulunamadi."), 40, tableStartY);
   } else {
     autoTable(doc, {
-      startY: 235,
+      startY: tableStartY,
       head: [["Tarih", "Profil", "Siparis Detayi", "Tutar"]],
       body: tableRows,
       theme: "plain",
