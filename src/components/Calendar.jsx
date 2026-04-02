@@ -7,7 +7,10 @@ const MONTHS = [
   "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
 ];
 
-export default function Calendar({ currentDate, setCurrentDate, records, onDayClick }) {
+export default function Calendar({ currentDate, setCurrentDate, records, onDayClick, min, max }) {
+  const minDate = min ? new Date(min + "T00:00:00") : null;
+  const maxDate = max ? new Date(max + "T00:00:00") : null;
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -19,8 +22,17 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
 
-  const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
-  const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+  const isPrevDisabled = minDate && (year < minDate.getFullYear() || (year === minDate.getFullYear() && month <= minDate.getMonth()));
+  const isNextDisabled = maxDate && (year > maxDate.getFullYear() || (year === maxDate.getFullYear() && month >= maxDate.getMonth()));
+
+  const handlePrevMonth = () => {
+    if (isPrevDisabled) return;
+    setCurrentDate(new Date(year, month - 1, 1));
+  };
+  const handleNextMonth = () => {
+    if (isNextDisabled) return;
+    setCurrentDate(new Date(year, month + 1, 1));
+  };
 
   const handleMonthSelect = (m) => {
     setCurrentDate(new Date(year, m, 1));
@@ -36,7 +48,8 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   const currentYear = new Date().getFullYear();
-  const yearRange = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
+  const startYear = minDate ? minDate.getFullYear() : currentYear - 5;
+  const yearRange = Array.from({ length: 12 }, (_, i) => startYear + i);
 
   return (
     <div className="bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-white dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-6 lg:p-10 transition-colors duration-700">
@@ -45,7 +58,10 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
       <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-white/10 relative">
         <button 
           onClick={handlePrevMonth}
-          className="w-12 h-12 flex items-center justify-center rounded-[18px] bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-primary dark:hover:bg-primary-dark hover:text-white dark:hover:text-white transition-colors border border-gray-200 dark:border-transparent text-xl font-bold shadow-sm"
+          disabled={isPrevDisabled}
+          className={`w-12 h-12 flex items-center justify-center rounded-[18px] bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors border border-gray-200 dark:border-transparent text-xl font-bold shadow-sm
+            ${isPrevDisabled ? 'opacity-10 cursor-not-allowed grayscale' : 'hover:bg-primary dark:hover:bg-primary-dark hover:text-white dark:hover:text-white'}
+          `}
         >
           &#10094;
         </button> 
@@ -67,7 +83,10 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
 
         <button 
           onClick={handleNextMonth}
-          className="w-12 h-12 flex items-center justify-center rounded-[18px] bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-primary dark:hover:bg-primary-dark hover:text-white dark:hover:text-white transition-colors border border-gray-200 dark:border-transparent text-xl font-bold shadow-sm"
+          disabled={isNextDisabled}
+          className={`w-12 h-12 flex items-center justify-center rounded-[18px] bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors border border-gray-200 dark:border-transparent text-xl font-bold shadow-sm
+            ${isNextDisabled ? 'opacity-10 cursor-not-allowed grayscale' : 'hover:bg-primary dark:hover:bg-primary-dark hover:text-white dark:hover:text-white'}
+          `}
         >
           &#10095;
         </button> 
