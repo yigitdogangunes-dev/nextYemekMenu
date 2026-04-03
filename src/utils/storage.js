@@ -2,7 +2,7 @@
 import { API } from "@/services/api";
 
 // Yeni siparişi alıp API servisi üzerinden mutfağa gönderen motor
-export const saveOrderToStorage = async (date, profile, foods) => {
+export const saveOrderToStorage = async (date, profile, items) => {
   try {
     // Backend tarafında UPSERT (Var olanı güncelle, yoksa ekle) mantığı kurulduğu için 
     // artık önce kontrol edip tek tek silmemize gerek kalmadı. 
@@ -10,7 +10,7 @@ export const saveOrderToStorage = async (date, profile, foods) => {
     await API.saveOrder({
       date: date,
       profile: profile,
-      foods: foods
+      items: items
     });
 
   } catch (error) {

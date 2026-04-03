@@ -13,7 +13,7 @@ export default function HistoryClient() {
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // MODALS
+  // MODALLAR
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({ date: "", records: [] });
   const [confirmData, setConfirmData] = useState({ isOpen: false, date: null, index: null });
@@ -67,7 +67,7 @@ export default function HistoryClient() {
     <div className="min-h-screen relative overflow-x-hidden selection:bg-primary-light selection:text-white font-sans text-foreground">
       <ThemeToggle />
 
-      {/* BACKGROUND MESH */}
+      {/* ARKA PLAN TASARIMI */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-background transition-colors duration-700">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-background to-[#e5e5ea] dark:hidden transition-colors duration-700"></div>
         <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-primary-light/10 blur-[200px] dark:hidden transition-colors duration-700" />
@@ -88,7 +88,7 @@ export default function HistoryClient() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative z-10 w-full max-w-[1400px] mx-auto px-4 pt-10 pb-24"
       >
-        {/* HEADER / BACK BUTTON */}
+        {/* BAŞLIK VE GERİ BUTONU */}
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className="group flex items-center gap-4 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-xl px-6 py-4 rounded-[24px] border border-gray-200 dark:border-white/10 shadow-sm hover:border-transparent dark:hover:border-transparent hover:shadow-apple dark:hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] transition-all overflow-hidden relative">
             <div className="absolute inset-y-0 right-0 w-0 bg-gradient-to-l from-primary-dark to-primary transition-all duration-500 ease-out group-hover:w-full z-0" />
@@ -105,10 +105,10 @@ export default function HistoryClient() {
           </h1>
         </div>
 
-        {/* CALENDAR AND TOTALS GRID */}
+        {/* TAKVİM VE ÖZET TABLOSU */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          {/* CALENDAR (Takes up 2 cols on Large screens) */}
+          {/* TAKVİM BÖLÜMÜ (Geniş ekranlarda 2 sütun kaplar) */}
           <div className="lg:col-span-2">
             <Calendar
               currentDate={currentDate}
@@ -119,7 +119,7 @@ export default function HistoryClient() {
             />
           </div>
 
-          {/* TOTAL EXPENSES CARD */}
+          {/* TOPLAM HARCAMA KARTI */}
           <div className="lg:col-span-1 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-8 overflow-hidden relative">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
 
@@ -128,7 +128,7 @@ export default function HistoryClient() {
                 HARCAMA ÖZETİ
               </h2>
               
-              {/* PDF Download Button */}
+              {/* PDF İndirme Butonu */}
               <button 
                 onClick={handleDownloadPdf}
                 disabled={!hasAnyRecordThisMonth || isPdfGenerating}
@@ -178,7 +178,7 @@ export default function HistoryClient() {
         </div>
       </motion.div>
 
-      {/* ADİSYON (DAY DETAIL) MODAL */}
+      {/* ADİSYON (GÜN DETAYI) MODALI */}
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
@@ -218,7 +218,7 @@ export default function HistoryClient() {
                 ) : (
                   <div className="flex flex-col gap-6">
                     {modalData.records.map((record, index) => {
-                      const dailyTotal = record.yemekler.reduce((sum, food) => sum + Number(food.price), 0);
+                      const dailyTotal = record.items.reduce((sum, food) => sum + Number(food.price), 0);
 
                       return (
                         <div key={index} className="relative bg-gray-50 dark:bg-[#111111] border-l-4 border-primary rounded-2xl p-6 shadow-sm group">
@@ -232,11 +232,11 @@ export default function HistoryClient() {
                           </button>
 
                           <div className="font-rajdhani text-3xl font-extrabold text-primary dark:text-primary-light mb-6 flex items-center gap-2">
-                            👤 {record.profil}
+                            👤 {record.profile}
                           </div>
 
                           <div className="flex flex-col gap-3 mb-6">
-                            {record.yemekler.map((food, foodIdx) => (
+                            {record.items.map((food, foodIdx) => (
                               <div key={foodIdx} className="flex justify-between items-center font-rajdhani text-2xl text-gray-700 dark:text-gray-300">
                                 <span>
                                   <span className="text-gray-400 mr-2">•</span>

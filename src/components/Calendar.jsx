@@ -54,7 +54,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
   return (
     <div className="bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-white dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-6 lg:p-10 transition-colors duration-700">
       
-      {/* HEADER SECTION */}
+      {/* BAŞLIK BÖLÜMÜ */}
       <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-white/10 relative">
         <button 
           onClick={handlePrevMonth}
@@ -92,7 +92,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
         </button> 
       </div>
 
-      {/* MONTH / YEAR PICKER DROPDOWNS */}
+      {/* AY / YIL SEÇİCİ AÇILIR MENÜLERİ */}
       <AnimatePresence mode="wait">
         {pickerMode === "month" && (
           <motion.div
@@ -149,7 +149,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
         )}
       </AnimatePresence>
 
-      {/* DAYS LEGEND */}
+      {/* GÜN İSİMLERİ */}
       <div className="grid grid-cols-7 gap-2 lg:gap-4 mb-4">
         {["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"].map(d => (
           <div key={d} className="text-center font-rajdhani font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-lg md:text-xl">
@@ -158,7 +158,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
         ))}
       </div>
 
-      {/* CALENDAR SQUARES GRID */}
+      {/* TAKVİM KÜÇÜK KUTUCUKLARI */}
       <div className="grid grid-cols-7 gap-2 lg:gap-4">
         {emptyBoxes.map((_, index) => (
           <div key={`empty-${index}`} className="opacity-0"></div>
@@ -176,7 +176,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
           const isFuture = cellDate > midnightToday;
 
           const dayRecords = records[fullDate] || [];
-          const orderProfiles = [...new Set(dayRecords.map(record => record.profil))];
+          const orderProfiles = [...new Set(dayRecords.map(record => record.profile))];
           const hasOrders = orderProfiles.length > 0;
 
           return (

@@ -14,7 +14,7 @@ import { saveOrderToStorage } from "@/utils/storage";
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState(getTodayFormatted());
   const [selectedProfile, setSelectedProfile] = useState(null);
-  const [selectedFoods, setSelectedFoods] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -34,12 +34,12 @@ export default function Home() {
     }
 
     try {
-      await saveOrderToStorage(selectedDate, selectedProfile, selectedFoods);
+      await saveOrderToStorage(selectedDate, selectedProfile, selectedItems);
 
       setToast({ show: true, message: `Şahane! Seçimleriniz ${selectedProfile} profiline kaydedildi.`, type: "success" });
 
       setSelectedProfile(null);
-      setSelectedFoods([]);
+      setSelectedItems([]);
 
       // State güncellemelerinden (React render) sonra kaydırma işleminin kesilmemesi için ufak bir bekleme
       setTimeout(() => {
@@ -63,7 +63,7 @@ export default function Home() {
 
       {!isScrolled && <ThemeToggle />}
 
-      {/* STICKY FLOATING SCROLL NAVBAR */}
+      {/* YAPIŞKAN NAVİGASYON BARI */}
       <AnimatePresence>
         {isScrolled && (
           <motion.div
@@ -75,7 +75,7 @@ export default function Home() {
           >
             <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
 
-              {/* COMPACT LOGO & TITLE */}
+              {/* LOGO VE BAŞLIK */}
               <div
                 className="flex items-center gap-1 cursor-pointer group scale-[1.1] md:scale-100 origin-left shrink-0"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -95,7 +95,7 @@ export default function Home() {
                 </h1>
               </div>
 
-              {/* RIGHT SECTION: DATE & THEME */}
+              {/* SAĞ BÖLÜM: TARİH VE TEMA */}
               <div className="flex items-center gap-4 md:gap-6">
                 <DatePicker
                   value={selectedDate}
@@ -116,15 +116,15 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* BACKGROUND */}
+      {/* ARKA PLAN */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-background transition-colors duration-700">
 
-        {/* LIGHT THEME MESH */}
+        {/* AÇIK TEMA GÖRSEL TASARIM */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-background to-[#e5e5ea] dark:hidden transition-colors duration-700"></div>
         <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-primary-light/10 blur-[200px] dark:hidden transition-colors duration-700" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#34c759]/5 blur-[200px] dark:hidden transition-colors duration-700" />
 
-        {/* DARK THEME MESH (Original Kodpilot Logic) */}
+        {/* KOYU TEMA GÖRSEL TASARIM */}
         <div className="hidden dark:block absolute inset-0 bg-[#0a0a0a] transition-colors duration-700 z-0">
           <div className="absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full blur-[180px]" style={{ background: 'rgba(99, 102, 241, 0.15)' }} />
           <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[160px]" style={{ background: 'rgba(139, 92, 246, 0.12)' }} />
@@ -141,14 +141,14 @@ export default function Home() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative z-10 w-full max-w-[1400px] mx-auto px-4 pt-10 pb-24"
       >
-        {/* HERO HEADER */}
-        {/* Clean Frosted Glassmorphism Card */}
+        {/* ANA BAŞLIK BÖLÜMÜ */}
+        {/* MODERN CAM EFEKTLİ KART */}
         <div className="relative p-8 lg:p-12 rounded-[40px] bg-white/70 dark:bg-white/[0.03] backdrop-blur-3xl border border-white dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden mb-16 transition-all duration-700">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
 
           <div className="w-full max-w-[1150px] mx-auto flex flex-col md:flex-row items-center justify-between gap-12 z-10 relative">
 
-            {/* LOGO & TITLE SECTION */}
+            {/* LOGO VE BAŞLIK ALANI */}
             <div className="flex flex-col items-center md:items-start group transition-all duration-700">
               <div className="relative w-[200px] h-[60px] md:w-[240px] md:h-[75px] mb-2 transform transition-transform duration-500 group-hover:scale-105">
                 <Image
@@ -164,7 +164,7 @@ export default function Home() {
               </h1>
             </div>
 
-            {/* DATE SELECTOR SECTION */}
+            {/* TARİH SEÇİCİ BÖLÜMÜ */}
             <div className="flex flex-col items-center md:items-end gap-3">
               <DatePicker
                 value={selectedDate}
@@ -177,7 +177,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* PROFILE SELECTOR */}
+        {/* PROFİL SEÇİCİ */}
         <div id="menu-baslangici" className="mb-20">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -191,7 +191,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* MENU BOARD */}
+        {/* MENÜ BOARD */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -199,12 +199,12 @@ export default function Home() {
         >
           <MenuBoard
             date={selectedDate}
-            selectedFoods={selectedFoods}
-            setSelectedFoods={setSelectedFoods}
+            selectedFoods={selectedItems}
+            setSelectedFoods={setSelectedItems}
           />
         </motion.div>
 
-        {/* FOOTER NAVIGATION */}
+        {/* ALT NAVİGASYON */}
         <div className="mt-20 flex justify-center">
           <Link
             href="/history"
@@ -218,9 +218,9 @@ export default function Home() {
 
       </motion.div>
 
-      {/* DYNAMIC ISLAND FLOATING BAR */}
+      {/* DİNAMİK YÜZEN BİLGİ BARI */}
       <AnimatePresence>
-        {selectedFoods.length > 0 && (
+        {selectedItems.length > 0 && (
           <motion.div
             initial={{ y: 200, x: "-50%", scale: 0.9 }}
             animate={{ y: -40, x: "-50%", scale: 1 }}
@@ -237,17 +237,17 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary-light/10 via-primary/20 to-primary-dark/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-              {/* State 1: Default Information */}
+              {/* Durum 1: Özet Bilgi */}
               <div className="relative z-10 flex items-center justify-between gap-4 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] transform group-hover:scale-90 group-hover:-translate-y-16 group-hover:opacity-0 w-full">
                 <div className="flex items-center gap-3">
                   <motion.div
-                    key={selectedFoods.length}
+                    key={selectedItems.length}
                     initial={{ scale: 1.5, rotate: -15 }}
                     animate={{ scale: 1, rotate: 0 }}
                     className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center border border-primary/20 shrink-0"
                   >
                     <span className="font-bebas text-2xl text-primary mt-1">
-                      {selectedFoods.length}
+                      {selectedItems.length}
                     </span>
                   </motion.div>
                   <span className="font-rajdhani text-lg sm:text-xl font-bold text-gray-700 dark:text-gray-300">
@@ -258,11 +258,11 @@ export default function Home() {
                 <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
 
                 <span className="font-rajdhani text-2xl sm:text-[28px] font-extrabold text-gray-900 dark:text-white tracking-widest">
-                  {selectedFoods.reduce((sum, food) => sum + Number(food.price), 0)} ₺
+                  {selectedItems.reduce((sum, food) => sum + Number(food.price), 0)} ₺
                 </span>
               </div>
 
-              {/* State 2: Hover Action text */}
+              {/* Durum 2: Hover Aksiyon Yazısı */}
               <div className="absolute inset-0 z-20 flex items-center justify-center gap-3 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] transform translate-y-16 scale-90 opacity-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 px-8 w-full">
                 <span className="font-bebas text-3xl tracking-widest text-gray-900 dark:text-white whitespace-nowrap mt-1">
                   SİPARİŞİ ONAYLA
@@ -276,7 +276,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Modern Toast Notification Fixed */}
+      {/* TOAST BİLDİRİMİ */}
       {toast.show && (
         <Toast
           message={toast.message}

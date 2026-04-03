@@ -2,33 +2,34 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDate) => {
-  // Extract month info from currentDate object
+  // currentDate objesinden ay bilgisini çıkar
   const currentMonthNum = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
   const currentMonthName = new Intl.DateTimeFormat('tr-TR', { month: 'long' }).format(currentDate);
 
-  // 1. Initialize Document (A4, Portrait, points)
+  // 1. Dökümanı Başlat (A4, Dikey, birim: pt)
   const doc = new jsPDF("p", "pt", "a4");
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Helper func for handling Turkish chars with jsPDF standard fonts
-  const tr = (str) => {
-    if (!str) return "";
-    return str.toString()
-      .replace(/ş/g, 's').replace(/Ş/g, 'S')
-      .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
-      .replace(/ç/g, 'c').replace(/Ç/g, 'C')
-      .replace(/ı/g, 'i').replace(/İ/g, 'I')
-      .replace(/ö/g, 'o').replace(/Ö/g, 'O')
-      .replace(/ü/g, 'u').replace(/Ü/g, 'U');
+  // jsPDF standart fontlarında Türkçe karakterleri işlemek için yardımcı fonksiyon
+  const tr = (text) => {
+    if (!text) return "";
+    return text.toString()
+      .normalize("NFC")
+      .replace(/ğ/g, "g").replace(/Ğ/g, "G")
+      .replace(/ş/g, "s").replace(/Ş/g, "S")
+      .replace(/ı/g, "i").replace(/İ/g, "I")
+      .replace(/ç/g, "c").replace(/Ç/g, "C")
+      .replace(/ö/g, "o").replace(/Ö/g, "O")
+      .replace(/ü/g, "u").replace(/Ü/g, "U");
   };
 
-  // --- HEADER SECTION ---
-  // Accent vertical line
-  doc.setFillColor(20, 184, 166); // Teal accent
+  // --- BAŞLIK BÖLÜMÜ ---
+  // Kenar süsü dikey çizgi
+  doc.setFillColor(20, 184, 166); // Turkuaz vurgu rengi
   doc.rect(40, 40, 5, 40, "F");
 
-  // Dynamically Load Custom Logo via HTML Canvas Trick (fixes SVG / Webpack issues)
+  // HTML Canvas numarasıyla logoyu yükle (SVG import sorunlarını çözer)
   try {
     const base64Data = await new Promise((resolve, reject) => {
       const img = new window.Image();
@@ -48,39 +49,39 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
       img.src = "/assets/svgexport-1.svg"; // Kesin çalışan logo dosyamız
     });
     
-    // Add image directly: X, Y, W, H
+    // Resmi ekle: X, Y, W, H
     doc.addImage(base64Data, "PNG", 52, 43, 110, 32); 
   } catch (error) {
-    // Elegant text fallback just in case logo image file is missing or blocked
+    // Logo dosyası eksikse zarif bir metin yedeği göster
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
-    doc.setTextColor(30, 41, 59); // Slate-800
+    doc.setTextColor(30, 41, 59); // Koyu gri (Slate-800)
     doc.text("KODPILOT YEMEK", 55, 60);
   }
 
-  // Subtitle (Month & Year)
+  // Alt Başlık (Ay & Yıl)
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
-  doc.setTextColor(148, 163, 184); // Slate-400
+  doc.setTextColor(148, 163, 184); // Açık gri (Slate-400)
   doc.text(tr(`Aylik Harcama Dokumu | ${currentMonthName} ${currentYear}`), 55, 95);
 
-  // Print Date
+  // Yazdırılma Tarihi
   const today = new Date().toLocaleDateString("tr-TR");
   doc.setFontSize(9);
   doc.text(tr(`Cikti Tarihi: ${today}`), pageWidth - 40, 95, { align: "right" });
   
-  // Separator Line
+  // Ayırıcı Çizgi
   doc.setDrawColor(226, 232, 240);
   doc.setLineWidth(1);
   doc.line(40, 110, pageWidth - 40, 110);
 
-  // --- SUMMARY BOX (Dynamic Grid) ---
+  // --- ÖZET KUTUSU (Dinamik Izgara) ---
   const profiles = Object.keys(monthlyTotals || {});
   const maxPerRow = 3;
   const profileRows = Math.max(1, Math.ceil(profiles.length / maxPerRow));
   const rowHeight = 20;
 
-  // Layout anchors - everything chains from boxTop
+  // Layout çapaları - her şey boxTop'a bağlıdır
   const boxTop = 130;
   const titleY = boxTop + 20;                              // "Aylık Profil Özetleri"
   const firstProfileY = titleY + 22;                       // İlk profil satırı
@@ -135,11 +136,11 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
   doc.setFontSize(13);
   doc.text(`Genel Toplam: ${grandTotal} TL`, pageWidth - 55, totalTextY, { align: "right" });
 
-  // --- DATATABLE SECTION (TIMELINE) ---
+  // --- VERİ TABLOSU BÖLÜMÜ (ZAMAN ÇİZELGESİ) ---
   const tableStartY = boxBottom + 25; // Tabloyu kutunun 25pt altından başlat
   const tableRows = [];
 
-  // Filter keys matching current month/year and sort ascending
+  // Mevcut ay/yıl ile eşleşen anahtarları filtrele ve artan sırada sırala
   const monthDates = Object.keys(recordsObj || {}).filter(dateString => {
     const parts = dateString.split("-");
     if (parts.length < 3) return false;
@@ -152,15 +153,15 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
     const items = recordsObj[dateStr] || [];
     
     items.forEach(record => {
-      const pName = record.profil;
+      const pName = record.profile;
       const capitalizedProfile = pName ? pName.charAt(0).toUpperCase() + pName.slice(1) : "Bilinmiyor";
-      const foodsArray = record.yemekler || [];
+      const itemsArray = record.items || [];
       
-      const summaryText = foodsArray.map(f => f.name).join(", ");
-      const total = foodsArray.reduce((sum, f) => sum + Number(f.price), 0);
+      const summaryText = itemsArray.map(f => f.name).join(", ");
+      const total = itemsArray.reduce((sum, f) => sum + Number(f.price), 0);
       
-      if (total > 0 || foodsArray.length > 0) {
-        tableRows.push([formattedDate, capitalizedProfile, tr(summaryText), `${total} TL`]);
+      if (total > 0 || itemsArray.length > 0) {
+        tableRows.push([formattedDate, tr(capitalizedProfile), tr(summaryText), `${total} TL`]);
       }
     });
   });
@@ -185,7 +186,7 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
         font: "helvetica",
         fontSize: 10,
         cellPadding: 8,
-        lineColor: [226, 232, 240], // Light slate line
+        lineColor: [226, 232, 240], // Açık gri çizgi rengi
         lineWidth: { bottom: 0.5 },
         textColor: [51, 65, 85]
       },
@@ -201,13 +202,13 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
     });
   }
 
-  // --- FOOTER ---
+  // --- ALT BİLGİ ---
   const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 30 : 250;
   doc.setFontSize(8);
   doc.setTextColor(148, 163, 184);
   doc.text(tr("Bu dokum Kodpilot Yemek Sistemi tarafindan otomatik olarak olusturulmustur."), pageWidth / 2, finalY, { align: "center" });
 
-  // 6. Save PDF
+  // 6. PDF'i Kaydet
   const filename = tr(`Kodpilot_${currentMonthName}_${currentYear}.pdf`).replace(/\s+/g, "_");
   doc.save(filename);
 };
