@@ -19,8 +19,8 @@ export const useRecords = (currentDate) => {
       }
       records[item.date].push({
         _id: item._id, 
-        profil: item.profile,
-        yemekler: item.foods
+        profile: item.profile,
+        items: item.items
       });
     });
   }
@@ -60,11 +60,11 @@ export const useRecords = (currentDate) => {
     if (recordMonth === currentMonth && recordYear === currentYear) {
       hasAnyRecordThisMonth = true;
       records[date].forEach(record => {
-        const dailyTotal = record.yemekler.reduce((sum, food) => sum + Number(food.price), 0);
-        if (!monthlyTotals[record.profil]) {
-          monthlyTotals[record.profil] = 0;
+        const dailyTotal = record.items.reduce((sum, food) => sum + Number(food.price), 0);
+        if (!monthlyTotals[record.profile]) {
+          monthlyTotals[record.profile] = 0;
         }
-        monthlyTotals[record.profil] += dailyTotal;
+        monthlyTotals[record.profile] += dailyTotal;
         grandTotal += dailyTotal;
       });
     }

@@ -42,5 +42,12 @@ export const API = {
       body: JSON.stringify(menuData),
     });
     return response.json();
+  },
+
+  // --- KULLANICI (USERS) İŞLEMLERİ ---
+  getUsers: async () => {
+    const response = await fetch(`${API_URL}/users`);
+    if (!response.ok) throw new Error("Kullanıcılar getirilemedi");
+    return response.json();
   }
 };

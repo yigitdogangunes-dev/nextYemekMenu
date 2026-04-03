@@ -6,18 +6,18 @@ import { API } from "@/services/api";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CATEGORIES = [
-  { id: "Tümü", label: "Tüm Menü" },
-  { id: "ÇORBA", label: "Çorbalar" },
-  { id: "ANA YEMEK", label: "Ana Yemekler" },
-  { id: "EŞLİKÇİ", label: "Eşlikçiler" },
-  { id: "SOĞUK", label: "Soğuklar" },
-  { id: "TATLI", label: "Tatlılar" }
+  { id: "all", label: "Tüm Menü" },
+  { id: "soup", label: "Çorbalar" },
+  { id: "mainCourse", label: "Ana Yemekler" },
+  { id: "side", label: "Eşlikçiler" },
+  { id: "cold", label: "Soğuklar" },
+  { id: "dessert", label: "Tatlılar" }
 ];
 
 export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const [dailyMenu, setDailyMenu] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("Tümü");
+  const [activeCategory, setActiveCategory] = useState("all");
 
   useEffect(() => {
     if (!date) return;
@@ -30,16 +30,16 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         if (existingMenus.length > 0) {
           setDailyMenu(existingMenus[0]);
         } else {
-          const yemekVeritabani = await API.getAllFoods();
+          const foodPool = await API.getAllFoods();
 
           // 3. Havuzdan rastgele yeni bir menü oluştur
           const newMenu = {
             date: date,
-            corba: rastgeleSec(yemekVeritabani.corba, 2),
-            anaYemek: rastgeleSec(yemekVeritabani.anaYemek, 3),
-            eslikci: rastgeleSec(yemekVeritabani.eslikci, 2),
-            soguk: rastgeleSec(yemekVeritabani.soguk, 2),
-            tatli: rastgeleSec(yemekVeritabani.tatli, 2)
+            soup: rastgeleSec(foodPool.soup, 2),
+            mainCourse: rastgeleSec(foodPool.mainCourse, 3),
+            side: rastgeleSec(foodPool.side, 2),
+            cold: rastgeleSec(foodPool.cold, 2),
+            dessert: rastgeleSec(foodPool.dessert, 2)
           };
 
           // 4."Bu yeni menüyü veritabanına kaydet" de
@@ -57,30 +57,30 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   }, [date]);
 
   // YEMEĞE TIKLAMA MOTORU (Varsayılan olarak 1 Porsiyon ekler)
-  const handleFoodClick = (food, categoryTitle) => {
-    const isAlreadySelected = selectedFoods.find(item => item.name === food.isim);
+  const handleFoodClick = (food, categoryLabel) => {
+    const isAlreadySelected = selectedFoods.find(item => item.name === food.name);
 
     if (isAlreadySelected) {
-      setSelectedFoods(selectedFoods.filter(item => item.name !== food.isim));
+      setSelectedFoods(selectedFoods.filter(item => item.name !== food.name));
     } else {
       // Sadece bu kategoriden olmayan (eski) seçimleri filtrele ve yenisini ekle
-      const filteredSelections = selectedFoods.filter(item => item.category !== categoryTitle);
+      const filteredSelections = selectedFoods.filter(item => item.category !== categoryLabel);
 
       setSelectedFoods([...filteredSelections, {
-        name: food.isim,
-        basePrice: food.fiyat,
-        price: food.fiyat,
+        name: food.name,
+        basePrice: food.price,
+        price: food.price,
         portion: 1,
-        category: categoryTitle
+        category: categoryLabel
       }]);
     }
   };
 
-  const handlePortionChange = (e, food, newPortion, categoryTitle) => {
+  const handlePortionChange = (e, food, newPortion, categoryLabel) => {
     e.stopPropagation();
 
     const updatedFoods = selectedFoods.map(item => {
-      if (item.name === food.isim) {
+      if (item.name === food.name) {
         return {
           ...item,
           portion: newPortion,
@@ -106,15 +106,15 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   }
 
   // Gruplandırılmış Render Fonksiyonu
-  const renderFoodGrid = (items, categoryName) => {
+  const renderFoodGrid = (items, categoryLabel) => {
     if (!items || items.length === 0) return null;
 
     return (
-      <div key={categoryName} className="mb-14">
+      <div key={categoryLabel} className="mb-14">
         {/* Kategori Başlığı */}
-        {activeCategory === "Tümü" && (
+        {activeCategory === "all" && (
           <div className="flex items-center gap-4 mb-6">
-            <h3 className="text-4xl font-bebas text-gray-800 dark:text-white tracking-[0.1em] transition-colors duration-700">{categoryName}</h3>
+            <h3 className="text-4xl font-bebas text-gray-800 dark:text-white tracking-[0.1em] transition-colors duration-700">{categoryLabel}</h3>
             <div className="h-[1px] flex-grow bg-gradient-to-r from-gray-200 dark:from-primary-light/50 to-transparent transition-colors duration-700"></div>
           </div>
         )}
@@ -125,34 +125,34 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         >
           <AnimatePresence mode="popLayout">
             {items.map((food) => {
-              const selectedItem = selectedFoods.find(item => item.name === food.isim);
+              const selectedItem = selectedFoods.find(item => item.name === food.name);
               const isSelected = !!selectedItem;
-              const displayPrice = isSelected ? selectedItem.price : food.fiyat;
+              const displayPrice = isSelected ? selectedItem.price : food.price;
               const currentPortion = isSelected ? selectedItem.portion : 1;
 
               return (
                 <motion.div
-                  key={food.isim}
+                  key={food.name}
                   layout
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className={`group relative overflow-hidden rounded-[28px] cursor-pointer bg-white dark:bg-[#111111] transition-all duration-400 flex flex-col ${isSelected
-                      ? "ring-4 ring-primary ring-offset-2 ring-offset-background dark:ring-offset-[#111111] shadow-[0_20px_40px_rgba(20,184,166,0.25)] dark:shadow-[0_0_25px_rgba(139,92,246,0.4)] border-transparent"
-                      : "border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-apple-hover dark:hover:border-primary-light/50"
+                    ? "ring-4 ring-primary ring-offset-2 ring-offset-background dark:ring-offset-[#111111] shadow-[0_20px_40px_rgba(20,184,166,0.25)] dark:shadow-[0_0_25px_rgba(139,92,246,0.4)] border-transparent"
+                    : "border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-apple-hover dark:hover:border-primary-light/50"
                     }`}
-                  onClick={() => handleFoodClick(food, categoryName)}
+                  onClick={() => handleFoodClick(food, categoryLabel)}
                 >
-                  {/* Image Section */}
+                  {/* RESİM BÖLÜMÜ */}
                   <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-black">
                     <Image
                       src={food.image}
-                      alt={food.isim}
+                      alt={food.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className={`object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${isSelected ? "brightness-[0.4] blur-[3px]" : ""}`}
-                      priority={food.isim === items[0].isim}
+                      priority={food.name === items[0].name}
                     />
                     {isSelected && (
                       <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -167,26 +167,26 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                         </motion.div>
                       </div>
                     )}
-                    {/* Category Badge - Lighter Theme -> Dark Theme */}
+                    {/* Kategori Rozeti - Açık Temadan Koyu Temaya Geçiş */}
                     <div className="absolute top-4 left-4 px-4 py-1.5 bg-white/90 dark:bg-black/70 backdrop-blur-md rounded-full shadow-sm dark:border dark:border-white/10 transition-colors duration-700">
                       <span className="text-gray-700 dark:text-white/90 text-[11px] font-rajdhani font-extrabold tracking-widest uppercase">
-                        {categoryName}
+                        {categoryLabel}
                       </span>
                     </div>
                   </div>
 
-                  {/* Content Section */}
+                  {/* İÇERİK BÖLÜMÜ */}
                   <div className="p-6 flex-grow flex flex-col justify-between z-20 relative bg-white dark:bg-[#111111] transition-colors duration-700">
                     <div>
                       <h3 className="font-bebas text-[28px] text-gray-800 dark:text-white tracking-wide leading-tight mb-1 group-hover:text-primary transition-colors dark:drop-shadow-md">
-                        {food.isim}
+                        {food.name}
                       </h3>
                       <p className="font-rajdhani text-[26px] font-bold text-primary-dark dark:text-primary-light group-hover:text-primary dark:group-hover:text-primary transition-colors dark:drop-shadow-md">
                         {displayPrice} ₺
                       </p>
                     </div>
 
-                    {/* Portion Controls */}
+                    {/* Porsiyon Kontrolleri */}
                     <AnimatePresence>
                       {isSelected && (
                         <motion.div
@@ -198,14 +198,14 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                           {[0.5, 1, 1.5, 2].map(p => (
                             <button
                               key={p}
-                              onClick={(e) => handlePortionChange(e, food, p, categoryName)}
+                              onClick={(e) => handlePortionChange(e, food, p, categoryLabel)}
                               className={`w-11 h-11 rounded-full dark:rounded-[22px] font-rajdhani font-bold text-sm transition-all duration-300 border dark:border border-transparent dark:border-white/20 flex items-center justify-center shadow-sm
                                 ${currentPortion === p
                                   ? "bg-primary border-primary text-white shadow-[0_5px_15px_rgba(20,184,166,0.3)] dark:shadow-[0_0_10px_rgba(139,92,246,0.4)] scale-110 dark:text-white"
                                   : "bg-gray-50 border-gray-200 text-gray-600 dark:bg-black/60 dark:text-gray-300 hover:border-primary/40 dark:hover:border-primary-light/70 hover:bg-primary/5 hover:text-primary dark:hover:text-primary-light"
                                 }`}
                             >
-                              x{p}
+                              {p}
                             </button>
                           ))}
                         </motion.div>
@@ -223,7 +223,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
-      {/* Category Filters */}
+      {/* Kategori Filtreleri */}
       <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
         {CATEGORIES.map(category => (
           <button
@@ -247,13 +247,13 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         ))}
       </div>
 
-      {/* Grid Rendering */}
+      {/* Grid Listeleme */}
       <div className="min-h-[500px]">
-        {(activeCategory === "Tümü" || activeCategory === "ÇORBA") && renderFoodGrid(dailyMenu.corba, "ÇORBA")}
-        {(activeCategory === "Tümü" || activeCategory === "ANA YEMEK") && renderFoodGrid(dailyMenu.anaYemek, "ANA YEMEK")}
-        {(activeCategory === "Tümü" || activeCategory === "EŞLİKÇİ") && renderFoodGrid(dailyMenu.eslikci, "EŞLİKÇİ")}
-        {(activeCategory === "Tümü" || activeCategory === "SOĞUK") && renderFoodGrid(dailyMenu.soguk, "SOĞUK")}
-        {(activeCategory === "Tümü" || activeCategory === "TATLI") && renderFoodGrid(dailyMenu.tatli, "TATLI")}
+        {(activeCategory === "all" || activeCategory === "soup") && renderFoodGrid(dailyMenu.soup, "ÇORBA")}
+        {(activeCategory === "all" || activeCategory === "mainCourse") && renderFoodGrid(dailyMenu.mainCourse, "ANA YEMEK")}
+        {(activeCategory === "all" || activeCategory === "side") && renderFoodGrid(dailyMenu.side, "EŞLİKÇİ")}
+        {(activeCategory === "all" || activeCategory === "cold") && renderFoodGrid(dailyMenu.cold, "SOĞUK")}
+        {(activeCategory === "all" || activeCategory === "dessert") && renderFoodGrid(dailyMenu.dessert, "TATLI")}
       </div>
     </div>
   );
