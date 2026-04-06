@@ -15,8 +15,8 @@ export const API = {
     });
     return response.json();
   },
-  checkExistingOrder: async (date, profile) => {
-    const response = await fetch(`${API_URL}/records?date=${encodeURIComponent(date)}&profile=${encodeURIComponent(profile)}`);
+  checkExistingOrder: async (date, user) => {
+    const response = await fetch(`${API_URL}/records?date=${encodeURIComponent(date)}&user=${encodeURIComponent(user)}`);
     return response.json();
   },
   deleteOrder: async (id) => {

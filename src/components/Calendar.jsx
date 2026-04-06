@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MONTHS = [
-  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", 
+  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
   "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
 ];
 
@@ -17,7 +17,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
   const [pickerMode, setPickerMode] = useState(null); // null | "month" | "year"
 
   let firstDay = new Date(year, month, 1).getDay();
-  firstDay = firstDay === 0 ? 6 : firstDay - 1; 
+  firstDay = firstDay === 0 ? 6 : firstDay - 1;
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
@@ -53,10 +53,10 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
 
   return (
     <div className="bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-white dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-6 lg:p-10 transition-colors duration-700">
-      
+
       {/* BAŞLIK BÖLÜMÜ */}
       <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-white/10 relative">
-        <button 
+        <button
           onClick={handlePrevMonth}
           disabled={isPrevDisabled}
           className={`w-12 h-12 flex items-center justify-center rounded-[18px] bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors border border-gray-200 dark:border-transparent text-xl font-bold shadow-sm
@@ -64,8 +64,8 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
           `}
         >
           &#10094;
-        </button> 
-        
+        </button>
+
         <div className="flex items-center gap-2 select-none">
           <button
             onClick={() => setPickerMode(pickerMode === "month" ? null : "month")}
@@ -81,7 +81,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
           </button>
         </div>
 
-        <button 
+        <button
           onClick={handleNextMonth}
           disabled={isNextDisabled}
           className={`w-12 h-12 flex items-center justify-center rounded-[18px] bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors border border-gray-200 dark:border-transparent text-xl font-bold shadow-sm
@@ -89,7 +89,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
           `}
         >
           &#10095;
-        </button> 
+        </button>
       </div>
 
       {/* AY / YIL SEÇİCİ AÇILIR MENÜLERİ */}
@@ -108,11 +108,10 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
                 <button
                   key={m}
                   onClick={() => handleMonthSelect(idx)}
-                  className={`py-4 px-2 rounded-2xl font-rajdhani text-xl md:text-2xl font-extrabold tracking-wider transition-all duration-300 ${
-                    idx === month 
-                      ? "bg-primary text-white shadow-lg shadow-primary/30 dark:shadow-primary-dark/40 scale-105" 
-                      : "text-gray-600 dark:text-gray-400 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary-light"
-                  }`}
+                  className={`py-4 px-2 rounded-2xl font-rajdhani text-xl md:text-2xl font-extrabold tracking-wider transition-all duration-300 ${idx === month
+                    ? "bg-primary text-white shadow-lg shadow-primary/30 dark:shadow-primary-dark/40 scale-105"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary-light"
+                    }`}
                 >
                   {m}
                 </button>
@@ -135,11 +134,10 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
                 <button
                   key={y}
                   onClick={() => handleYearSelect(y)}
-                  className={`py-4 px-2 rounded-2xl font-rajdhani text-xl md:text-2xl font-extrabold tracking-wider transition-all duration-300 ${
-                    y === year 
-                      ? "bg-primary text-white shadow-lg shadow-primary/30 dark:shadow-primary-dark/40 scale-105" 
-                      : "text-gray-600 dark:text-gray-400 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary-light"
-                  }`}
+                  className={`py-4 px-2 rounded-2xl font-rajdhani text-xl md:text-2xl font-extrabold tracking-wider transition-all duration-300 ${y === year
+                    ? "bg-primary text-white shadow-lg shadow-primary/30 dark:shadow-primary-dark/40 scale-105"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary-light"
+                    }`}
                 >
                   {y}
                 </button>
@@ -176,12 +174,12 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
           const isFuture = cellDate > midnightToday;
 
           const dayRecords = records[fullDate] || [];
-          const orderProfiles = [...new Set(dayRecords.map(record => record.profile))];
+          const orderProfiles = [...new Set(dayRecords.map(record => record.user?.firstName).filter(Boolean))];
           const hasOrders = orderProfiles.length > 0;
 
           return (
-            <motion.div 
-              key={day} 
+            <motion.div
+              key={day}
               onClick={() => !isFuture && onDayClick(fullDate, dayRecords)}
               whileHover={!isFuture ? { y: -5, scale: 1.02 } : {}}
               className={`group relative h-[120px] md:h-[150px] rounded-2xl p-2 md:p-3 border transition-all duration-300 flex flex-col items-start justify-start overflow-hidden
@@ -201,17 +199,17 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
               `}>
                 {day}
               </span>
-              
+
               {hasOrders && (
                 <div className="relative z-10 w-full flex-grow flex flex-col mt-2 overflow-hidden group-hover:overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full">
-                  
+
                   <div className="flex flex-col gap-1 group-hover:hidden w-full">
                     {orderProfiles.slice(0, 2).map((name, idx) => {
                       const shortName = name.length > 7 ? name.substring(0, 7) + "." : name;
                       return (
-                        <span 
-                          key={`s-${idx}`} 
-                          title={name} 
+                        <span
+                          key={`s-${idx}`}
+                          title={name}
                           className="inline-block whitespace-nowrap bg-primary/15 dark:bg-[#0a0a0a]/80 text-primary dark:text-primary-light border border-primary/20 dark:border-primary/40 px-1.5 py-px rounded-md text-[11px] md:text-[13px] font-rajdhani font-extrabold truncate w-full shadow-sm tracking-wide"
                         >
                           👤 {shortName}
@@ -224,14 +222,14 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="hidden group-hover:flex flex-col gap-1.5 w-full pb-1">
                     {orderProfiles.map((name, idx) => {
                       const shortName = name.length > 8 ? name.substring(0, 8) + ".." : name;
                       return (
-                        <span 
-                          key={`f-${idx}`} 
-                          title={name} 
+                        <span
+                          key={`f-${idx}`}
+                          title={name}
                           className="inline-block whitespace-nowrap bg-primary/15 dark:bg-[#0a0a0a]/80 text-primary dark:text-primary-light border border-primary/20 dark:border-primary/40 px-1.5 py-0.5 rounded-md text-[11px] md:text-[13px] font-rajdhani font-extrabold truncate w-full shadow-sm tracking-wide"
                         >
                           👤 {shortName}

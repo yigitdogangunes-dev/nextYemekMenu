@@ -2,15 +2,17 @@
 import { API } from "@/services/api";
 
 // Yeni siparişi alıp API servisi üzerinden mutfağa gönderen motor
-export const saveOrderToStorage = async (date, profile, items) => {
+export const saveOrderToStorage = async (date, user, items) => {
   try {
-    // Backend tarafında UPSERT (Var olanı güncelle, yoksa ekle) mantığı kurulduğu için 
-    // artık önce kontrol edip tek tek silmemize gerek kalmadı. 
-    // Direkt gönderiyoruz, backend hallediyor.
+    const formattedItems = items.map(item => ({
+      food: item.food,       // Yemeğin _id'si
+      portion: item.portion,
+      price: item.price
+    }));
     await API.saveOrder({
       date: date,
-      profile: profile,
-      items: items
+      user: user,
+      items: formattedItems
     });
 
   } catch (error) {

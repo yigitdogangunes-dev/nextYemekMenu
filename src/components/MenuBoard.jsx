@@ -58,16 +58,16 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
 
   // YEMEĞE TIKLAMA MOTORU (Varsayılan olarak 1 Porsiyon ekler)
   const handleFoodClick = (food, categoryLabel) => {
-    const isAlreadySelected = selectedFoods.find(item => item.name === food.name);
+    const isAlreadySelected = selectedFoods.find(item => item.food === food._id);
 
     if (isAlreadySelected) {
-      setSelectedFoods(selectedFoods.filter(item => item.name !== food.name));
+      setSelectedFoods(selectedFoods.filter(item => item.food !== food._id));
     } else {
       // Sadece bu kategoriden olmayan (eski) seçimleri filtrele ve yenisini ekle
       const filteredSelections = selectedFoods.filter(item => item.category !== categoryLabel);
 
       setSelectedFoods([...filteredSelections, {
-        name: food.name,
+        food: food._id,
         basePrice: food.price,
         price: food.price,
         portion: 1,
@@ -80,7 +80,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
     e.stopPropagation();
 
     const updatedFoods = selectedFoods.map(item => {
-      if (item.name === food.name) {
+      if (item.food === food._id) {
         return {
           ...item,
           portion: newPortion,
@@ -125,7 +125,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         >
           <AnimatePresence mode="popLayout">
             {items.map((food) => {
-              const selectedItem = selectedFoods.find(item => item.name === food.name);
+              const selectedItem = selectedFoods.find(item => item.food === food._id);
               const isSelected = !!selectedItem;
               const displayPrice = isSelected ? selectedItem.price : food.price;
               const currentPortion = isSelected ? selectedItem.portion : 1;

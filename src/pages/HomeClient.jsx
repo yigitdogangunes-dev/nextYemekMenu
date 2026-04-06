@@ -36,7 +36,7 @@ export default function Home() {
     try {
       await saveOrderToStorage(selectedDate, selectedProfile, selectedItems);
 
-      setToast({ show: true, message: `Şahane! Seçimleriniz ${selectedProfile} profiline kaydedildi.`, type: "success" });
+      setToast({ show: true, message: `Şahane! Seçimleriniz kaydedildi.`, type: "success" });
 
       setSelectedProfile(null);
       setSelectedItems([]);

@@ -10,7 +10,7 @@ export const useRecords = (currentDate) => {
 
   // 1. GELEN VERİYİ TAKVİMİN İSTEDİĞİ FORMATA ÇEVİR
   const records = {};
-  
+
   // Veri daha gelmediyse (yükleniyorsa) veya hata varsa boş obje ile sistemi koruyoruz
   if (rawRecords) {
     rawRecords.forEach(item => {
@@ -18,8 +18,8 @@ export const useRecords = (currentDate) => {
         records[item.date] = [];
       }
       records[item.date].push({
-        _id: item._id, 
-        profile: item.profile,
+        _id: item._id,
+        user: item.user,
         items: item.items
       });
     });
@@ -35,7 +35,7 @@ export const useRecords = (currentDate) => {
       await API.deleteOrder(recordToDelete._id);
 
       // SWR'ye "Veritabanı değişti, arka planda çaktırmadan yeni listeyi çek" emrini veriyoruz (MUTATE)
-      mutate(); 
+      mutate();
 
       const updatedDayRecords = records[date].filter((_, i) => i !== index);
       return updatedDayRecords;
@@ -61,21 +61,22 @@ export const useRecords = (currentDate) => {
       hasAnyRecordThisMonth = true;
       records[date].forEach(record => {
         const dailyTotal = record.items.reduce((sum, food) => sum + Number(food.price), 0);
-        if (!monthlyTotals[record.profile]) {
-          monthlyTotals[record.profile] = 0;
+        const userName = record.user?.firstName || "Bilinmeyen Kullanıcı";
+        if (!monthlyTotals[userName]) {
+          monthlyTotals[userName] = 0;
         }
-        monthlyTotals[record.profile] += dailyTotal;
+        monthlyTotals[userName] += dailyTotal;
         grandTotal += dailyTotal;
       });
     }
   });
 
   // İhtiyacımız olan her şeyi arayüze (HistoryClient) gönderiyoruz
-  return { 
-    records, 
-    deleteRecord, 
-    monthlyTotals, 
-    hasAnyRecordThisMonth, 
+  return {
+    records,
+    deleteRecord,
+    monthlyTotals,
+    hasAnyRecordThisMonth,
     grandTotal,
     isLoading, // SWR'den gelen yüklenme durumu
     error      // SWR'den gelen hata durumu

@@ -50,7 +50,7 @@ export default function HistoryClient() {
   const handleDownloadPdf = () => {
     if (!hasAnyRecordThisMonth) return;
     setIsPdfGenerating(true);
-    
+
     setTimeout(async () => {
       try {
         await generateExpenseReport(records, monthlyTotals, currentDate);
@@ -127,9 +127,9 @@ export default function HistoryClient() {
               <h2 className="font-bebas text-4xl text-gray-800 dark:text-white tracking-widest mt-2">
                 HARCAMA ÖZETİ
               </h2>
-              
+
               {/* PDF İndirme Butonu */}
-              <button 
+              <button
                 onClick={handleDownloadPdf}
                 disabled={!hasAnyRecordThisMonth || isPdfGenerating}
                 className="group flex items-center justify-center w-12 h-12 rounded-2xl bg-white/70 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md dark:hover:border-primary-light/50 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
@@ -232,22 +232,22 @@ export default function HistoryClient() {
                           </button>
 
                           <div className="font-rajdhani text-3xl font-extrabold text-primary dark:text-primary-light mb-6 flex items-center gap-2">
-                            👤 {record.profile}
+                            👤 {record.user?.firstName} {record.user?.lastName}
                           </div>
 
                           <div className="flex flex-col gap-3 mb-6">
-                            {record.items.map((food, foodIdx) => (
+                            {record.items.map((item, foodIdx) => (
                               <div key={foodIdx} className="flex justify-between items-center font-rajdhani text-2xl text-gray-700 dark:text-gray-300">
                                 <span>
                                   <span className="text-gray-400 mr-2">•</span>
-                                  {food.name}
-                                  {food.portion ? (
+                                  {item.food?.name}
+                                  {item.portion ? (
                                     <span className="text-gray-400 dark:text-gray-500 text-xl ml-2">
-                                      (x{food.portion})
+                                      (x{item.portion})
                                     </span>
                                   ) : ''}
                                 </span>
-                                <span className="font-bold">{food.price} ₺</span>
+                                <span className="font-bold">{item.food?.price} ₺</span>
                               </div>
                             ))}
                           </div>
