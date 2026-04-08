@@ -69,14 +69,15 @@ export default function HistoryClient() {
 
       {/* ARKA PLAN TASARIMI */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-background transition-colors duration-700">
+        {/* AÇIK TEMA GÖRSEL TASARIM (Purple Glows) */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-background to-[#e5e5ea] dark:hidden transition-colors duration-700"></div>
-        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-primary-light/10 blur-[200px] dark:hidden transition-colors duration-700" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#34c759]/5 blur-[200px] dark:hidden transition-colors duration-700" />
+        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-[#8b5cf6]/5 blur-[200px] dark:hidden transition-colors duration-700" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#a78bfa]/5 blur-[200px] dark:hidden transition-colors duration-700" />
 
-        <div className="hidden dark:block absolute inset-0 bg-[#0a0a0a] transition-colors duration-700 z-0">
-          <div className="absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full blur-[180px]" style={{ background: 'rgba(99, 102, 241, 0.15)' }} />
-          <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[160px]" style={{ background: 'rgba(139, 92, 246, 0.12)' }} />
-          <div className="absolute bottom-[-15%] left-[20%] w-[50vw] h-[50vw] rounded-full blur-[200px]" style={{ background: 'rgba(59, 130, 246, 0.1)' }} />
+        <div className="hidden dark:block absolute inset-0 bg-[#0c1421] transition-colors duration-700 z-0">
+          <div className="absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full blur-[180px]" style={{ background: 'rgba(20, 184, 166, 0.12)' }} />
+          <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[160px]" style={{ background: 'rgba(94, 234, 212, 0.08)' }} />
+          <div className="absolute bottom-[-15%] left-[20%] w-[50vw] h-[50vw] rounded-full blur-[200px]" style={{ background: 'rgba(13, 148, 136, 0.06)' }} />
         </div>
 
         <div className="absolute inset-0 z-0 bg-[radial-gradient(#00000005_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff04_1px,transparent_1px)] bg-[size:3rem_3rem]"></div>
@@ -90,7 +91,7 @@ export default function HistoryClient() {
       >
         {/* BAŞLIK VE GERİ BUTONU */}
         <div className="flex items-center justify-between mb-8">
-          <Link href="/" className="group flex items-center gap-4 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-xl px-6 py-4 rounded-[24px] border border-gray-200 dark:border-white/10 shadow-sm hover:border-transparent dark:hover:border-transparent hover:shadow-apple dark:hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] transition-all overflow-hidden relative">
+          <Link href="/" className="group flex items-center gap-4 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-xl px-6 py-4 rounded-[24px] border border-gray-200 dark:border-white/10 shadow-sm hover:border-transparent dark:hover:border-transparent hover:shadow-apple dark:hover:shadow-[0_0_20px_rgba(20,184,166,0.25)] transition-all overflow-hidden relative">
             <div className="absolute inset-y-0 right-0 w-0 bg-gradient-to-l from-primary-dark to-primary transition-all duration-500 ease-out group-hover:w-full z-0" />
             <div className="relative z-10 text-gray-800 dark:text-white transform group-hover:-translate-x-1 group-hover:text-white transition-all duration-300">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -241,13 +242,13 @@ export default function HistoryClient() {
                                 <span>
                                   <span className="text-gray-400 mr-2">•</span>
                                   {item.food?.name}
-                                  {item.portion ? (
+                                  {item.portion && item.portion !== 1 ? (
                                     <span className="text-gray-400 dark:text-gray-500 text-xl ml-2">
-                                      (x{item.portion})
+                                      ({item.portion})
                                     </span>
                                   ) : ''}
                                 </span>
-                                <span className="font-bold">{item.food?.price} ₺</span>
+                                <span className="font-bold">{item.price} ₺</span>
                               </div>
                             ))}
                           </div>

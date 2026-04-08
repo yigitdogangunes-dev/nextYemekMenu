@@ -119,16 +119,16 @@ export default function Home() {
       {/* ARKA PLAN */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-background transition-colors duration-700">
 
-        {/* AÇIK TEMA GÖRSEL TASARIM */}
+        {/* AÇIK TEMA GÖRSEL TASARIM (Purlple Glows) */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-background to-[#e5e5ea] dark:hidden transition-colors duration-700"></div>
-        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-primary-light/10 blur-[200px] dark:hidden transition-colors duration-700" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#34c759]/5 blur-[200px] dark:hidden transition-colors duration-700" />
+        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-[#8b5cf6]/5 blur-[200px] dark:hidden transition-colors duration-700" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#a78bfa]/5 blur-[200px] dark:hidden transition-colors duration-700" />
 
-        {/* KOYU TEMA GÖRSEL TASARIM */}
-        <div className="hidden dark:block absolute inset-0 bg-[#0a0a0a] transition-colors duration-700 z-0">
-          <div className="absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full blur-[180px]" style={{ background: 'rgba(99, 102, 241, 0.15)' }} />
-          <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[160px]" style={{ background: 'rgba(139, 92, 246, 0.12)' }} />
-          <div className="absolute bottom-[-15%] left-[20%] w-[50vw] h-[50vw] rounded-full blur-[200px]" style={{ background: 'rgba(59, 130, 246, 0.1)' }} />
+        {/* KOYU TEMA GÖRSEL TASARIM (Green/Teal Glows) */}
+        <div className="hidden dark:block absolute inset-0 bg-[#0c1421] transition-colors duration-700 z-0">
+          <div className="absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full blur-[180px]" style={{ background: 'rgba(20, 184, 166, 0.12)' }} />
+          <div className="absolute top-[20%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[160px]" style={{ background: 'rgba(94, 234, 212, 0.08)' }} />
+          <div className="absolute bottom-[-15%] left-[20%] w-[50vw] h-[50vw] rounded-full blur-[200px]" style={{ background: 'rgba(13, 148, 136, 0.06)' }} />
         </div>
 
         {/* Subtle dot pattern for premium texture */}
@@ -208,7 +208,7 @@ export default function Home() {
         <div className="mt-20 flex justify-center">
           <Link
             href="/history"
-            className="group relative inline-flex items-center justify-center px-14 py-5 font-rajdhani text-3xl font-bold bg-transparent dark:bg-[#111111] border-2 border-gray-300 dark:border-primary-dark/40 rounded-[24px] dark:rounded-3xl overflow-hidden transition-all hover:border-transparent dark:hover:shadow-[0_0_40px_rgba(139,92,246,0.25)] hover:-translate-y-1 dark:hover:scale-[1.03]"
+            className="group relative inline-flex items-center justify-center px-14 py-5 font-rajdhani text-3xl font-bold bg-transparent dark:bg-[#111111] border-2 border-gray-300 dark:border-primary-dark/40 rounded-[24px] dark:rounded-3xl overflow-hidden transition-all hover:border-transparent dark:hover:shadow-[0_0_40px_rgba(20,184,166,0.25)] hover:-translate-y-1 dark:hover:scale-[1.03]"
           >
             <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black dark:block hidden" />
             <span className="relative uppercase tracking-widest z-30 transition-all duration-300 text-gray-500 dark:text-primary-light group-hover:text-white group-hover:opacity-100 antialiased outline-none">Geçmiş Harcamalar</span>

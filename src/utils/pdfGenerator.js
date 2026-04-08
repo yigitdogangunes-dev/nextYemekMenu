@@ -153,15 +153,20 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
     const items = recordsObj[dateStr] || [];
     
     items.forEach(record => {
-      const pName = record.profile;
-      const capitalizedProfile = pName ? pName.charAt(0).toUpperCase() + pName.slice(1) : "Bilinmiyor";
+      const user = record.user;
+      const userName = user ? user.firstName : "Bilinmiyor";
       const itemsArray = record.items || [];
       
-      const summaryText = itemsArray.map(f => f.name).join(", ");
+      const summaryText = itemsArray.map(f => {
+        const name = f.food?.name || "Bilinmiyor";
+        const portionStr = (f.portion && f.portion !== 1) ? ` (${f.portion})` : "";
+        return `${name}${portionStr}`;
+      }).join(", ");
+      
       const total = itemsArray.reduce((sum, f) => sum + Number(f.price), 0);
       
       if (total > 0 || itemsArray.length > 0) {
-        tableRows.push([formattedDate, tr(capitalizedProfile), tr(summaryText), `${total} TL`]);
+        tableRows.push([formattedDate, tr(userName), tr(summaryText), `${total} TL`]);
       }
     });
   });

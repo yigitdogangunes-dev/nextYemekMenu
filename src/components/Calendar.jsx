@@ -186,7 +186,7 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
                 ${isFuture ? 'opacity-30 pointer-events-none grayscale bg-gray-50 dark:bg-black/20 border-gray-100 dark:border-white/5' : 'cursor-pointer'}
                 ${isToday && !hasOrders ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : ''}
                 ${!isFuture && !isToday && !hasOrders ? 'bg-white dark:bg-[#151515] border-gray-100 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-apple' : ''}
-                ${hasOrders ? 'bg-white dark:bg-[#151515] border-primary/40 dark:border-primary-dark/50 hover:border-primary hover:shadow-apple dark:hover:shadow-[0_0_20px_rgba(139,92,246,0.25)]' : ''}
+                ${hasOrders ? 'bg-white dark:bg-[#151515] border-primary/40 dark:border-primary-dark/50 hover:border-primary hover:shadow-apple dark:hover:shadow-[0_0_20px_rgba(20,184,166,0.25)]' : ''}
               `}
             >
               {hasOrders && (

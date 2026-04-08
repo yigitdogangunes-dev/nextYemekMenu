@@ -139,7 +139,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className={`group relative overflow-hidden rounded-[28px] cursor-pointer bg-white dark:bg-[#111111] transition-all duration-400 flex flex-col ${isSelected
-                    ? "ring-4 ring-primary ring-offset-2 ring-offset-background dark:ring-offset-[#111111] shadow-[0_20px_40px_rgba(20,184,166,0.25)] dark:shadow-[0_0_25px_rgba(139,92,246,0.4)] border-transparent"
+                    ? "ring-4 ring-primary ring-offset-2 ring-offset-background dark:ring-offset-[#111111] shadow-[0_20px_40px_rgba(139,92,246,0.25)] dark:shadow-[0_0_25px_rgba(20,184,166,0.4)] border-transparent"
                     : "border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-apple-hover dark:hover:border-primary-light/50"
                     }`}
                   onClick={() => handleFoodClick(food, categoryLabel)}
@@ -201,7 +201,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                               onClick={(e) => handlePortionChange(e, food, p, categoryLabel)}
                               className={`w-11 h-11 rounded-full dark:rounded-[22px] font-rajdhani font-bold text-sm transition-all duration-300 border dark:border border-transparent dark:border-white/20 flex items-center justify-center shadow-sm
                                 ${currentPortion === p
-                                  ? "bg-primary border-primary text-white shadow-[0_5px_15px_rgba(20,184,166,0.3)] dark:shadow-[0_0_10px_rgba(139,92,246,0.4)] scale-110 dark:text-white"
+                                  ? "bg-primary border-primary text-white shadow-[0_5px_15px_rgba(139,92,246,0.3)] dark:shadow-[0_0_10px_rgba(20,184,166,0.4)] scale-110 dark:text-white"
                                   : "bg-gray-50 border-gray-200 text-gray-600 dark:bg-black/60 dark:text-gray-300 hover:border-primary/40 dark:hover:border-primary-light/70 hover:bg-primary/5 hover:text-primary dark:hover:text-primary-light"
                                 }`}
                             >

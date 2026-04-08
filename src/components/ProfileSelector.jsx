@@ -68,12 +68,12 @@ export default function ProfileSelector({ selectedProfile, setSelectedProfile })
                     transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
                     onClick={() => setSelectedProfile(isSelected ? null : profile._id)}
                     className={`group relative h-48 sm:h-56 rounded-[30px] flex flex-col items-center justify-center cursor-pointer transition-all duration-500 ease-out border ${isSelected
-                        ? "border-primary shadow-[0_0_30px_rgba(20,184,166,0.3)] dark:shadow-[0_0_40px_rgba(139,92,246,0.3)] bg-card dark:bg-gradient-to-b dark:from-primary-dark/20 dark:to-black/80 z-20 scale-[1.03] ring-1 ring-primary-light/50"
+                        ? "border-primary shadow-[0_0_30px_rgba(139,92,246,0.3)] dark:shadow-[0_0_40px_rgba(20,184,166,0.3)] bg-card dark:bg-gradient-to-b dark:from-primary-dark/20 dark:to-black/80 z-20 scale-[1.03] ring-1 ring-primary-light/50"
                         : "border-gray-200/50 dark:border-white/5 bg-card dark:bg-white/5 shadow-apple dark:shadow-none hover:-translate-y-1 hover:border-gray-300 dark:hover:border-white/20 backdrop-blur-3xl"
                       } overflow-hidden hover:scale-[1.02]`}
                   >
                     {/* ... rest of the card looks fine ... */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,184,166,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 dark:hidden z-0"></div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.15),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 dark:hidden z-0"></div>
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out dark:hidden"></div>
 
                     <div className={`absolute inset-0 transition-opacity duration-700 ${isSelected ? "opacity-30" : "opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20"}`}>
@@ -89,7 +89,7 @@ export default function ProfileSelector({ selectedProfile, setSelectedProfile })
 
                     <div className="relative z-10 flex flex-col items-center gap-4">
                       <div className={`relative w-[70px] h-[70px] sm:w-[90px] sm:h-[90px] rounded-full overflow-hidden transition-all duration-500 shadow-md dark:shadow-2xl border-2 ${isSelected
-                          ? "border-primary scale-110 drop-shadow-[0_8px_16px_rgba(20,184,166,0.3)] dark:drop-shadow-[0_0_20px_rgba(139,92,246,0.5)] filter-none grayscale-0"
+                          ? "border-primary scale-110 drop-shadow-[0_8px_16px_rgba(139,92,246,0.3)] dark:drop-shadow-[0_0_20px_rgba(20,184,166,0.5)] filter-none grayscale-0"
                           : "border-gray-200 dark:border-white/10 grayscale opacity-60 dark:opacity-50 group-hover:opacity-90 group-hover:grayscale-[50%] dark:group-hover:grayscale-[50%] group-hover:shadow-lg dark:group-hover:scale-105"
                         }`}>
                         <Image
@@ -107,7 +107,7 @@ export default function ProfileSelector({ selectedProfile, setSelectedProfile })
                           {profile.firstName}
                         </p>
 
-                        <div className={`mt-2 w-2 h-2 rounded-full transition-all duration-400 ${isSelected ? "bg-primary shadow-[0_0_10px_rgba(20,184,166,0.6)] dark:shadow-[0_0_12px_rgba(139,92,246,0.8)] scale-100" : "bg-transparent scale-0"}`} />
+                        <div className={`mt-2 w-2 h-2 rounded-full transition-all duration-400 ${isSelected ? "bg-primary shadow-[0_0_10px_rgba(139,92,246,0.6)] dark:shadow-[0_0_12px_rgba(20,184,166,0.8)] scale-100" : "bg-transparent scale-0"}`} />
                       </motion.div>
                     </div>
 
