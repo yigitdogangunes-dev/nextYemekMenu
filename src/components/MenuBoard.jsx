@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { rastgeleSec } from "@/utils/choose-random";
 import { API } from "@/services/api";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORIES = [
   { id: "all", label: "Tüm Menü" },
@@ -18,6 +19,8 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const [dailyMenu, setDailyMenu] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     if (!date) return;
@@ -125,6 +128,9 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         >
           <AnimatePresence mode="popLayout">
             {items.map((food) => {
+              // GÜVENLİK: Eğer yemeğin kendisi yoksa veya henüz populate edilmemişse (string/ID ise) atla
+              if (!food || typeof food !== "object" || !food._id) return null;
+
               const selectedItem = selectedFoods.find(item => item.food === food._id);
               const isSelected = !!selectedItem;
               const displayPrice = isSelected ? selectedItem.price : food.price;
@@ -132,7 +138,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
 
               return (
                 <motion.div
-                  key={food.name}
+                  key={food._id}
                   layout
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -181,9 +187,11 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                       <h3 className="font-bebas text-[28px] text-gray-800 dark:text-white tracking-wide leading-tight mb-1 group-hover:text-primary transition-colors dark:drop-shadow-md">
                         {food.name}
                       </h3>
-                      <p className="font-rajdhani text-[26px] font-bold text-primary-dark dark:text-primary-light group-hover:text-primary dark:group-hover:text-primary transition-colors dark:drop-shadow-md">
-                        {displayPrice} ₺
-                      </p>
+                      {isAdmin && (
+                        <p className="font-rajdhani text-[26px] font-bold text-primary-dark dark:text-primary-light group-hover:text-primary dark:group-hover:text-primary transition-colors dark:drop-shadow-md">
+                          {displayPrice} ₺
+                        </p>
+                      )}
                     </div>
 
                     {/* Porsiyon Kontrolleri */}

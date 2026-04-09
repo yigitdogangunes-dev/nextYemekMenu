@@ -51,9 +51,19 @@ export default function DatePicker({ value, onChange, min, max, compact = false 
         setIsOpen(false);
       }
     };
+    
+    // Sayfa kaydırılınca kapat (Portal olduğu için havada kalmasın)
+    const handleScroll = () => {
+      if (isOpen) setIsOpen(false);
+    };
+
     document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isOpen]);
 
   const selectedDay = parsedValue.getDate();
   const selectedMonth = parsedValue.getMonth();

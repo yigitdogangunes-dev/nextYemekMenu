@@ -8,10 +8,13 @@ import ConfirmModal from "@/components/ConfirmModal";
 import ThemeToggle from "@/components/ThemeToggle";
 import Toast from "@/components/Toast";
 import { generateExpenseReport } from "@/utils/pdfGenerator";
+import { useAuth } from "@/context/AuthContext";
 
 export default function HistoryClient() {
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   // MODALLAR
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,8 +112,8 @@ export default function HistoryClient() {
         {/* TAKVİM VE ÖZET TABLOSU */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          {/* TAKVİM BÖLÜMÜ (Geniş ekranlarda 2 sütun kaplar) */}
-          <div className="lg:col-span-2">
+          {/* TAKVİM BÖLÜMÜ */}
+          <div className={isAdmin ? "lg:col-span-2" : "lg:col-span-3"}>
             <Calendar
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
@@ -120,62 +123,64 @@ export default function HistoryClient() {
             />
           </div>
 
-          {/* TOPLAM HARCAMA KARTI */}
-          <div className="lg:col-span-1 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-8 overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
+          {/* TOPLAM HARCAMA KARTI - Sadece Admin görür */}
+          {isAdmin && (
+            <div className="lg:col-span-1 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-8 overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
 
-            <div className="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
-              <h2 className="font-bebas text-4xl text-gray-800 dark:text-white tracking-widest mt-2">
-                HARCAMA ÖZETİ
-              </h2>
+              <div className="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+                <h2 className="font-bebas text-4xl text-gray-800 dark:text-white tracking-widest mt-2">
+                  HARCAMA ÖZETİ
+                </h2>
 
-              {/* PDF İndirme Butonu */}
-              <button
-                onClick={handleDownloadPdf}
-                disabled={!hasAnyRecordThisMonth || isPdfGenerating}
-                className="group flex items-center justify-center w-12 h-12 rounded-2xl bg-white/70 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md dark:hover:border-primary-light/50 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-                title="Aylık Dökümü İndir (PDF)"
-              >
-                {isPdfGenerating ? (
-                  <span className="w-5 h-5 border-[3px] border-primary border-t-transparent rounded-full animate-spin"></span>
-                ) : (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors duration-300">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="12" y1="18" x2="12" y2="12" />
-                    <polyline points="9 15 12 18 15 15" />
-                  </svg>
-                )}
-              </button>
-            </div>
+                {/* PDF İndirme Butonu - Sadece Admin */}
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={!hasAnyRecordThisMonth || isPdfGenerating}
+                  className="group flex items-center justify-center w-12 h-12 rounded-2xl bg-white/70 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md dark:hover:border-primary-light/50 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                  title="Aylık Dökümü İndir (PDF)"
+                >
+                  {isPdfGenerating ? (
+                    <span className="w-5 h-5 border-[3px] border-primary border-t-transparent rounded-full animate-spin"></span>
+                  ) : (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors duration-300">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="12" y1="18" x2="12" y2="12" />
+                      <polyline points="9 15 12 18 15 15" />
+                    </svg>
+                  )}
+                </button>
+              </div>
 
-            {!hasAnyRecordThisMonth ? (
-              <p className="text-center text-gray-500 dark:text-gray-400 font-rajdhani text-xl italic pt-4">
-                Bu ay için henüz hiçbir harcama kaydı bulunmamaktadır.
-              </p>
-            ) : (
-              <div className="flex flex-col gap-6">
-                {Object.entries(monthlyTotals).map(([profileName, totalAmount], idx) => (
-                  <div key={profileName} className="flex justify-between items-center bg-gray-50/50 dark:bg-[#0a0a0a]/50 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <span className="font-rajdhani text-2xl font-bold text-gray-700 dark:text-gray-200 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary dark:text-primary-light text-xl">👤</div>
-                      {profileName}
-                    </span>
-                    <span className="font-rajdhani text-3xl font-extrabold text-gray-800 dark:text-primary-light">
-                      {totalAmount} ₺
+              {!hasAnyRecordThisMonth ? (
+                <p className="text-center text-gray-500 dark:text-gray-400 font-rajdhani text-xl italic pt-4">
+                  Bu ay için henüz hiçbir harcama kaydı bulunmamaktadır.
+                </p>
+              ) : (
+                <div className="flex flex-col gap-6">
+                  {Object.entries(monthlyTotals).map(([profileName, totalAmount], idx) => (
+                    <div key={profileName} className="flex justify-between items-center bg-gray-50/50 dark:bg-[#0a0a0a]/50 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                      <span className="font-rajdhani text-2xl font-bold text-gray-700 dark:text-gray-200 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary dark:text-primary-light text-xl">👤</div>
+                        {profileName}
+                      </span>
+                      <span className="font-rajdhani text-3xl font-extrabold text-gray-800 dark:text-primary-light">
+                        {totalAmount} ₺
+                      </span>
+                    </div>
+                  ))}
+
+                  <div className="mt-4 pt-6 flex justify-between items-center border-t-2 border-dashed border-primary/40 bg-primary/5 dark:bg-primary-dark/10 rounded-3xl p-6">
+                    <span className="font-bebas text-3xl text-gray-800 dark:text-white tracking-widest">GENEL TOPLAM</span>
+                    <span className="font-rajdhani text-4xl font-extrabold text-primary dark:text-primary-light drop-shadow-sm dark:drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
+                      {grandTotal} ₺
                     </span>
                   </div>
-                ))}
-
-                <div className="mt-4 pt-6 flex justify-between items-center border-t-2 border-dashed border-primary/40 bg-primary/5 dark:bg-primary-dark/10 rounded-3xl p-6">
-                  <span className="font-bebas text-3xl text-gray-800 dark:text-white tracking-widest">GENEL TOPLAM</span>
-                  <span className="font-rajdhani text-4xl font-extrabold text-primary dark:text-primary-light drop-shadow-sm dark:drop-shadow-[0_0_10px_rgba(139,92,246,0.3)]">
-                    {grandTotal} ₺
-                  </span>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </motion.div>
 
@@ -248,14 +253,18 @@ export default function HistoryClient() {
                                     </span>
                                   ) : ''}
                                 </span>
-                                <span className="font-bold">{item.price} ₺</span>
+                                {isAdmin && (
+                                  <span className="font-bold">{item.price} ₺</span>
+                                )}
                               </div>
                             ))}
                           </div>
 
-                          <div className="flex justify-end items-center border-t border-gray-200 dark:border-white/10 pt-4 font-rajdhani text-3xl font-extrabold text-gray-800 dark:text-white">
-                            Toplam: <span className="text-primary dark:text-primary-light ml-2">{dailyTotal} ₺</span>
-                          </div>
+                          {isAdmin && (
+                            <div className="flex justify-end items-center border-t border-gray-200 dark:border-white/10 pt-4 font-rajdhani text-3xl font-extrabold text-gray-800 dark:text-white">
+                              Toplam: <span className="text-primary dark:text-primary-light ml-2">{dailyTotal} ₺</span>
+                            </div>
+                          )}
 
                         </div>
                       );

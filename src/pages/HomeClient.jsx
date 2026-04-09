@@ -2,22 +2,30 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import ProfileSelector from "@/components/ProfileSelector";
 import MenuBoard from "@/components/MenuBoard";
 import Toast from "@/components/Toast";
-import ThemeToggle from "@/components/ThemeToggle";
 import DatePicker from "@/components/DatePicker";
+import UserMenu from "@/components/UserMenu";
 import { getTodayFormatted } from "@/utils/date";
 import { saveOrderToStorage } from "@/utils/storage";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const [selectedDate, setSelectedDate] = useState(getTodayFormatted());
-  const [selectedProfile, setSelectedProfile] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
-
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // GÜVENLİK DUVARI: Giriş yapmamış kişiyi anında login ekranına yolla
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,20 +36,20 @@ export default function Home() {
   }, []);
 
   const handleSave = async () => {
-    if (!selectedProfile) {
-      setToast({ show: true, message: "Lütfen seçimleri kaydetmeden önce yukarıdan bir profil seçin!", type: "error" });
+    if (!user) {
+      setToast({ show: true, message: "Oturum bilgileriniz eksik. Lütfen tekrar giriş yapın.", type: "error" });
+      router.push("/login");
       return;
     }
 
     try {
-      await saveOrderToStorage(selectedDate, selectedProfile, selectedItems);
+      // Artık 'selectedProfile' diye sormuyoruz. Direk context içindeki user._id'yi veriyoruz!
+      await saveOrderToStorage(selectedDate, user._id, selectedItems);
 
-      setToast({ show: true, message: `Şahane! Seçimleriniz kaydedildi.`, type: "success" });
+      setToast({ show: true, message: `Şahane! Seçimleriniz ${user.firstName} adına kaydedildi.`, type: "success" });
 
-      setSelectedProfile(null);
       setSelectedItems([]);
 
-      // State güncellemelerinden (React render) sonra kaydırma işleminin kesilmemesi için ufak bir bekleme
       setTimeout(() => {
         const el = document.getElementById("menu-baslangici");
         if (el) {
@@ -58,10 +66,19 @@ export default function Home() {
     }
   };
 
+  // Eğer giriş yapıp yapmadığı araştırılıyorsa beyaz ekran yerine modern bir yükleme göster
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative overflow-x-hidden selection:bg-primary-light selection:text-white font-sans text-foreground">
 
-      {!isScrolled && <ThemeToggle />}
+
 
       {/* YAPIŞKAN NAVİGASYON BARI */}
       <AnimatePresence>
@@ -107,7 +124,7 @@ export default function Home() {
 
                 <div className="w-[1px] h-10 bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
 
-                <ThemeToggle isInline={true} />
+                <UserMenu />
               </div>
 
             </div>
@@ -139,12 +156,16 @@ export default function Home() {
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-[1400px] mx-auto px-4 pt-10 pb-24"
+        className="relative z-[60] w-full max-w-[1400px] mx-auto px-4 pt-4 pb-24"
       >
         {/* ANA BAŞLIK BÖLÜMÜ */}
         {/* MODERN CAM EFEKTLİ KART */}
-        <div className="relative p-8 lg:p-12 rounded-[40px] bg-white/70 dark:bg-white/[0.03] backdrop-blur-3xl border border-white dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden mb-16 transition-all duration-700">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
+        <div className="relative z-50 p-8 lg:p-12 rounded-[40px] bg-white/70 dark:bg-white/[0.03] backdrop-blur-3xl border border-white dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] mb-16 transition-all duration-700">
+
+          {/* ÜST ÇİZGİ MASKESİ (Radius'a uyum sağlaması için) */}
+          <div className="absolute top-0 left-0 right-0 h-[40px] overflow-hidden rounded-t-[40px] pointer-events-none">
+            <div className="w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
+          </div>
 
           <div className="w-full max-w-[1150px] mx-auto flex flex-col md:flex-row items-center justify-between gap-12 z-10 relative">
 
@@ -164,8 +185,12 @@ export default function Home() {
               </h1>
             </div>
 
-            {/* TARİH SEÇİCİ BÖLÜMÜ */}
-            <div className="flex flex-col items-center md:items-end gap-3">
+            {/* SAĞ BÖLÜM: KULLANICI MENÜSÜ VE TARİH */}
+            <div className="flex flex-col items-center md:items-end gap-6 z-[100]">
+              <div className="hidden sm:block">
+                <UserMenu />
+              </div>
+
               <DatePicker
                 value={selectedDate}
                 onChange={setSelectedDate}
@@ -177,19 +202,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* PROFİL SEÇİCİ */}
-        <div id="menu-baslangici" className="mb-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <ProfileSelector
-              selectedProfile={selectedProfile}
-              setSelectedProfile={setSelectedProfile}
-            />
-          </motion.div>
-        </div>
+        {/* MENÜ BOARD - Artık en üstte */}
+        <div id="menu-baslangici" className="mb-20"></div>
 
         {/* MENÜ BOARD */}
         <motion.div
@@ -257,9 +271,15 @@ export default function Home() {
 
                 <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
 
-                <span className="font-rajdhani text-2xl sm:text-[28px] font-extrabold text-gray-900 dark:text-white tracking-widest">
-                  {selectedItems.reduce((sum, food) => sum + Number(food.price), 0)} ₺
-                </span>
+                {user?.role === "admin" ? (
+                  <span className="font-rajdhani text-2xl sm:text-[28px] font-extrabold text-gray-900 dark:text-white tracking-widest">
+                    {selectedItems.reduce((sum, food) => sum + Number(food.price), 0)} ₺
+                  </span>
+                ) : (
+                  <span className="font-rajdhani text-lg sm:text-xl font-bold text-primary italic">
+                    Afiyet Olsun!
+                  </span>
+                )}
               </div>
 
               {/* Durum 2: Hover Aksiyon Yazısı */}

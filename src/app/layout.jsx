@@ -1,6 +1,7 @@
 import { Bebas_Neue, Rajdhani, Fugaz_One } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/context/AuthContext";
 
 // Fontları indirip değişkene atıyoruz
 const bebas = Bebas_Neue({ 
@@ -35,7 +36,9 @@ export default function RootLayout({ children }) {
     <html lang="tr" suppressHydrationWarning className={`${bebas.variable} ${rajdhani.variable} ${fugaz.variable}`} data-scroll-behavior="smooth">
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

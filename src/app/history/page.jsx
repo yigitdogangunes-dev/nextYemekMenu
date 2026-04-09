@@ -9,7 +9,6 @@ export const metadata = {
 export default function HistoryPage() {
   return (
     <main>
-      {/* Az önce kopyaladığımız o devasa motoru buraya bir lego gibi takıyoruz */}
       <HistoryClient />
     </main>
   );
