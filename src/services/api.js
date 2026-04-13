@@ -1,13 +1,10 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
-// Artık şifreli kasayı (HttpOnly Cookie) kullanacağımız için
-// tarayıcı her isteğe otomatik o biletleri (cookies) kendi ekleyecek.
-// Tek yapmamız gereken "Biletleri de isteğe dahil et (credentials: 'include')" demek.
 const getOptions = (method = "GET", body = null) => {
   const options = {
     method,
     headers: { "Content-Type": "application/json" },
-    credentials: "include" // Cookie'lerin otomatik gitmesini sağlayan sihirli kural
+    credentials: "include" 
   };
   if (body) options.body = JSON.stringify(body);
   return options;
@@ -15,10 +12,20 @@ const getOptions = (method = "GET", body = null) => {
 
 export const API = {
   // --- KİMLİK DOĞRULAMA (AUTH) ---
+  
+  // Login artık e-posta ile yapılıyor
   login: async (credentials) => {
     const response = await fetch(`${API_URL}/auth/login`, getOptions("POST", credentials));
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Giriş başarısız!");
+    return data;
+  },
+
+  // Yeni Kayıt
+  register: async (userData) => {
+    const response = await fetch(`${API_URL}/auth/register`, getOptions("POST", userData));
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Kayıt başarısız!");
     return data;
   },
 
@@ -31,6 +38,22 @@ export const API = {
     const response = await fetch(`${API_URL}/auth/me`, getOptions("GET"));
     if (!response.ok) throw new Error("Oturum bulunamadı");
     return response.json();
+  },
+
+  // Şifremi Unuttum
+  forgotPassword: async (email) => {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, getOptions("POST", { email }));
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "E-posta gönderilemedi");
+    return data;
+  },
+
+  // Şifre Sıfırla
+  resetPassword: async (token, password) => {
+    const response = await fetch(`${API_URL}/auth/reset-password/${token}`, getOptions("POST", { password }));
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Şifre sıfırlanamadı");
+    return data;
   },
 
   // --- KAYIT (RECORDS) İŞLEMLERİ ---

@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image"; // Image importu eklendi
+import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { API } from "@/services/api";
+import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function LoginClient() {
-  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +20,7 @@ export default function LoginClient() {
     setError("");
 
     try {
-      const response = await API.login({ firstName, password });
+      const response = await API.login({ email, password });
       login(response.user);
     } catch (err) {
       setError(err.message || "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
@@ -67,12 +68,12 @@ export default function LoginClient() {
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-foreground text-sm font-rajdhani font-medium ml-1">Kullanıcı Adı</label>
+            <label className="text-foreground text-sm font-rajdhani font-medium ml-1">E-posta Adresi</label>
             <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Örn: Yiğit"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="örnek@kodpilot.com"
               className="w-full bg-background/50 border border-input text-foreground rounded-xl px-4 py-3 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-rajdhani"
               required
               disabled={isLoading}
@@ -80,7 +81,12 @@ export default function LoginClient() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-foreground text-sm font-rajdhani font-medium ml-1">Şifre</label>
+            <div className="flex items-center justify-between ml-1">
+              <label className="text-foreground text-sm font-rajdhani font-medium">Şifre</label>
+              <Link href="/forgot-password" title="Şifremi Unuttum" className="text-xs text-primary hover:text-secondary transition-colors font-rajdhani">
+                Şifremi Unuttum?
+              </Link>
+            </div>
             <input
               type="password"
               value={password}
@@ -95,7 +101,7 @@ export default function LoginClient() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground font-rajdhani font-bold text-lg py-3.5 rounded-xl transition-all shadow-[0_0_20px_var(--primary-half)] disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
+            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground font-bold text-lg py-3.5 rounded-xl transition-all shadow-[0_0_20px_var(--primary-half)] disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden font-rajdhani"
           >
             {isLoading ? (
               <span className="flex items-center justify-center">
@@ -112,6 +118,16 @@ export default function LoginClient() {
             )}
           </button>
         </form>
+
+        {/* REGISTER LINK */}
+        <div className="mt-8 text-center border-t border-border/50 pt-6">
+          <p className="text-muted-foreground font-rajdhani text-sm">
+            Hesabınız yok mu?{" "}
+            <Link href="/register" title="Yeni Kayıt Oluştur" className="text-primary font-bold hover:text-secondary transition-colors">
+              Hemen Kayıt Ol
+            </Link>
+          </p>
+        </div>
 
       </div>
     </div>
