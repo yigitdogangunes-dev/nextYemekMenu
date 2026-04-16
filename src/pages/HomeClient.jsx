@@ -234,7 +234,7 @@ export default function Home() {
 
       {/* DİNAMİK YÜZEN BİLGİ BARI */}
       <AnimatePresence>
-        {selectedItems.length > 0 && (
+        {selectedItems.length > 0 && user?.role !== "accountant" && (
           <motion.div
             initial={{ y: 200, x: "-50%", scale: 0.9 }}
             animate={{ y: -40, x: "-50%", scale: 1 }}

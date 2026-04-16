@@ -16,7 +16,7 @@ export default function ResetPasswordClient({ token }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       return setError("Şifreler birbiriyle eşleşmiyor.");
     }
@@ -48,7 +48,7 @@ export default function ResetPasswordClient({ token }) {
       <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-secondary/20 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="relative w-full max-w-md bg-card/60 backdrop-blur-xl border border-border p-8 rounded-3xl shadow-xl z-10 transition-all">
-        
+
         <div className="text-center mb-10">
           <div className="relative w-[180px] h-[60px] mx-auto mb-2">
             <Image
@@ -109,7 +109,7 @@ export default function ResetPasswordClient({ token }) {
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground font-bold text-lg py-3.5 rounded-xl transition-all shadow-lg disabled:opacity-50 font-rajdhani"
           >
-            {isLoading ? "Güncelleniyor..." : "Şifreyi Güncelle ve Giriş Yap"}
+            {isLoading ? "Güncelleniyor..." : "Şifreyi Güncelle"}
           </button>
         </form>
 

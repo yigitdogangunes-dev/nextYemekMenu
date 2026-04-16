@@ -21,6 +21,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
+  const isAccountant = user?.role === "accountant";
 
   useEffect(() => {
     if (!date) return;
@@ -61,6 +62,8 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
 
   // YEMEĞE TIKLAMA MOTORU (Varsayılan olarak 1 Porsiyon ekler)
   const handleFoodClick = (food, categoryLabel) => {
+    if (isAccountant) return; // Muhasebeci seçim yapamaz
+
     const isAlreadySelected = selectedFoods.find(item => item.food === food._id);
 
     if (isAlreadySelected) {
@@ -144,7 +147,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  className={`group relative overflow-hidden rounded-[28px] cursor-pointer bg-white dark:bg-[#111111] transition-all duration-400 flex flex-col ${isSelected
+                  className={`group relative overflow-hidden rounded-[28px] ${isAccountant ? "cursor-default" : "cursor-pointer"} bg-white dark:bg-[#111111] transition-all duration-400 flex flex-col ${isSelected
                     ? "ring-4 ring-primary ring-offset-2 ring-offset-background dark:ring-offset-[#111111] shadow-[0_20px_40px_rgba(139,92,246,0.25)] dark:shadow-[0_0_25px_rgba(20,184,166,0.4)] border-transparent"
                     : "border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-apple-hover dark:hover:border-primary-light/50"
                     }`}

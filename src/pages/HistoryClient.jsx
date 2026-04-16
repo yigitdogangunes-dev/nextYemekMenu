@@ -15,6 +15,8 @@ export default function HistoryClient() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
+  const isAccountant = user?.role === "accountant";
+  const isManager = isAdmin || isAccountant;
 
   // MODALLAR
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -113,7 +115,7 @@ export default function HistoryClient() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* TAKVİM BÖLÜMÜ */}
-          <div className={isAdmin ? "lg:col-span-2" : "lg:col-span-3"}>
+          <div className={isManager ? "lg:col-span-2" : "lg:col-span-3"}>
             <Calendar
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
@@ -123,8 +125,8 @@ export default function HistoryClient() {
             />
           </div>
 
-          {/* TOPLAM HARCAMA KARTI - Sadece Admin görür */}
-          {isAdmin && (
+          {/* TOPLAM HARCAMA KARTI - Yönetici ve Muhasebeci görür */}
+          {isManager && (
             <div className="lg:col-span-1 bg-white/70 dark:bg-[#111111]/80 backdrop-blur-3xl border border-gray-100 dark:border-white/10 shadow-apple dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-[40px] p-8 overflow-hidden relative">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-light via-primary to-primary-dark opacity-80" />
 
@@ -229,13 +231,15 @@ export default function HistoryClient() {
                       return (
                         <div key={index} className="relative bg-gray-50 dark:bg-[#111111] border-l-4 border-primary rounded-2xl p-6 shadow-sm group">
 
-                          <button
-                            onClick={() => handleDeleteClick(modalData.date, index)}
-                            className="absolute top-6 right-6 p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors opacity-100 dark:opacity-100"
-                            title="Siparişi İptal Et"
-                          >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                          </button>
+                          {!isAccountant && (
+                            <button
+                              onClick={() => handleDeleteClick(modalData.date, index)}
+                              className="absolute top-6 right-6 p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors opacity-100 dark:opacity-100"
+                              title="Siparişi İptal Et"
+                            >
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                            </button>
+                          )}
 
                           <div className="font-rajdhani text-3xl font-extrabold text-primary dark:text-primary-light mb-6 flex items-center gap-2">
                             👤 {record.user?.firstName} {record.user?.lastName}
@@ -253,14 +257,14 @@ export default function HistoryClient() {
                                     </span>
                                   ) : ''}
                                 </span>
-                                {isAdmin && (
+                                {isManager && (
                                   <span className="font-bold">{item.price} ₺</span>
                                 )}
                               </div>
                             ))}
                           </div>
 
-                          {isAdmin && (
+                          {isManager && (
                             <div className="flex justify-end items-center border-t border-gray-200 dark:border-white/10 pt-4 font-rajdhani text-3xl font-extrabold text-gray-800 dark:text-white">
                               Toplam: <span className="text-primary dark:text-primary-light ml-2">{dailyTotal} ₺</span>
                             </div>
