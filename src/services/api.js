@@ -13,11 +13,18 @@ const getOptions = (method = "GET", body = null) => {
 export const API = {
   // --- KİMLİK DOĞRULAMA (AUTH) ---
   
-  // Login artık e-posta ile yapılıyor
   login: async (credentials) => {
     const response = await fetch(`${API_URL}/auth/login`, getOptions("POST", credentials));
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Giriş başarısız!");
+    return data;
+  },
+
+  // Gelen Token'ı Doğrulama (Magic Link)
+  verifyLogin: async (token) => {
+    const response = await fetch(`${API_URL}/auth/verify/${token}`, getOptions("GET"));
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Doğrulama başarısız!");
     return data;
   },
 
@@ -40,21 +47,6 @@ export const API = {
     return response.json();
   },
 
-  // Şifremi Unuttum
-  forgotPassword: async (email) => {
-    const response = await fetch(`${API_URL}/auth/forgot-password`, getOptions("POST", { email }));
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "E-posta gönderilemedi");
-    return data;
-  },
-
-  // Şifre Sıfırla
-  resetPassword: async (token, password) => {
-    const response = await fetch(`${API_URL}/auth/reset-password/${token}`, getOptions("POST", { password }));
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Şifre sıfırlanamadı");
-    return data;
-  },
 
   // --- KAYIT (RECORDS) İŞLEMLERİ ---
   getRecords: async () => {

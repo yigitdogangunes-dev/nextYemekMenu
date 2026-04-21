@@ -12,7 +12,6 @@ export default function RegisterClient() {
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -122,21 +121,6 @@ export default function RegisterClient() {
               required
               disabled={isLoading}
             />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-foreground text-sm font-rajdhani font-medium ml-1">Şifre</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••"
-              className="w-full bg-background/50 border border-input text-foreground rounded-xl px-4 py-2.5 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-rajdhani"
-              required
-              disabled={isLoading}
-            />
-            <p className="text-[10px] text-muted-foreground ml-1 font-rajdhani">* En az 6 karakter olmalıdır.</p>
           </div>
 
           <button

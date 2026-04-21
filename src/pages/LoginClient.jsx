@@ -9,7 +9,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 export default function LoginClient() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -20,8 +20,8 @@ export default function LoginClient() {
     setError("");
 
     try {
-      const response = await API.login({ email, password });
-      login(response.user);
+      const response = await API.login({ email });
+      setMessage(response.message || "Giriş bağlantısı e-posta adresinize gönderildi.");
     } catch (err) {
       setError(err.message || "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.");
     } finally {
@@ -65,6 +65,13 @@ export default function LoginClient() {
           </div>
         )}
 
+        {/* BAŞARI MESAJI */}
+        {message && (
+          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-green-500 text-sm font-rajdhani text-center animate-pulse">
+            {message}
+          </div>
+        )}
+
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -74,24 +81,6 @@ export default function LoginClient() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="örnek@kodpilot.com"
-              className="w-full bg-background/50 border border-input text-foreground rounded-xl px-4 py-3 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-rajdhani"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between ml-1">
-              <label className="text-foreground text-sm font-rajdhani font-medium">Şifre</label>
-              <Link href="/forgot-password" title="Şifremi Unuttum" className="text-xs text-primary hover:text-secondary transition-colors font-rajdhani">
-                Şifremi Unuttum?
-              </Link>
-            </div>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••"
               className="w-full bg-background/50 border border-input text-foreground rounded-xl px-4 py-3 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-rajdhani"
               required
               disabled={isLoading}
