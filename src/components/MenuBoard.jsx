@@ -34,9 +34,11 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
         if (existingMenus.length > 0) {
           setDailyMenu(existingMenus[0]);
         } else {
+          /* --- RANDOM MENÜ OLUŞTURMA İPTAL EDİLDİ ---
+           * Artık menüler WhatsApp grubundan okunup veritabanına otomatik eklenecek.
+           * Eğer bu tarihte veritabanında menü yoksa, boş bir şablon gösteriyoruz.
           const foodPool = await API.getAllFoods();
 
-          // 3. Havuzdan rastgele yeni bir menü oluştur
           const newMenu = {
             date: date,
             soup: rastgeleSec(foodPool.soup, 2),
@@ -46,9 +48,12 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
             dessert: rastgeleSec(foodPool.dessert, 2)
           };
 
-          // 4."Bu yeni menüyü veritabanına kaydet" de
           const savedMenu = await API.saveDailyMenu(newMenu);
           setDailyMenu(savedMenu);
+          */
+         
+          // Boş menü şablonu (WhatsApp'tan gelene kadar)
+          setDailyMenu({ date: date, soup: [], mainCourse: [], side: [], cold: [], dessert: [] });
         }
       } catch (error) {
         console.error("Menü yüklenirken hata:", error);
