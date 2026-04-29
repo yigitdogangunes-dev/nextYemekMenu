@@ -20,6 +20,8 @@ export const useRecords = (currentDate) => {
       records[item.date].push({
         _id: item._id,
         user: item.user,
+        isGuest: item.isGuest,
+        guestName: item.guestName,
         items: item.items
       });
     });
@@ -61,7 +63,10 @@ export const useRecords = (currentDate) => {
       hasAnyRecordThisMonth = true;
       records[date].forEach(record => {
         const dailyTotal = record.items.reduce((sum, food) => sum + Number(food.price), 0);
-        const userName = record.user?.firstName || "Bilinmeyen Kullanıcı";
+        const userName = record.isGuest 
+          ? `${record.guestName || "İsimsiz"} (Misafir)` 
+          : (record.user?.firstName || "Bilinmeyen Kullanıcı");
+
         if (!monthlyTotals[userName]) {
           monthlyTotals[userName] = 0;
         }

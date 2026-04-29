@@ -242,7 +242,7 @@ export default function HistoryClient() {
                           )}
 
                           <div className="font-rajdhani text-3xl font-extrabold text-primary dark:text-primary-light mb-6 flex items-center gap-2">
-                            👤 {record.user?.firstName} {record.user?.lastName}
+                            👤 {record.isGuest ? `${record.guestName || 'İsimsiz'} (Misafir)` : `${record.user?.firstName} ${record.user?.lastName || ''}`}
                           </div>
 
                           <div className="flex flex-col gap-3 mb-6">
