@@ -51,7 +51,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
           const savedMenu = await API.saveDailyMenu(newMenu);
           setDailyMenu(savedMenu);
           */
-         
+
           // Boş menü şablonu (WhatsApp'tan gelene kadar)
           setDailyMenu({ date: date, soup: [], mainCourse: [], side: [], cold: [], dessert: [] });
         }
@@ -236,6 +236,45 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
       </div>
     );
   };
+
+  // Menünün tamamen boş olup olmadığını kontrol et
+  const isMenuEmpty =
+    dailyMenu.soup.length === 0 &&
+    dailyMenu.mainCourse.length === 0 &&
+    dailyMenu.side.length === 0 &&
+    dailyMenu.cold.length === 0 &&
+    dailyMenu.dessert.length === 0;
+
+  if (isMenuEmpty) {
+    return (
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-2xl w-full bg-white/50 dark:bg-[#111111]/50 backdrop-blur-xl border border-gray-100 dark:border-white/5 rounded-[40px] p-10 sm:p-16 shadow-[0_20px_60px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+        >
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="mb-8 relative w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-gray-50 dark:bg-black rounded-full flex items-center justify-center border border-gray-100 dark:border-white/5 shadow-inner"
+          >
+            {/* Şık bir saat/bekleme ikonu */}
+            <svg className="w-12 h-12 sm:w-16 sm:h-16 text-primary dark:text-primary-light opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </motion.div>
+          <h2 className="text-4xl sm:text-5xl font-bebas tracking-[0.1em] text-gray-800 dark:text-white mb-4">
+            BUGÜNÜN MENÜSÜ BEKLENİYOR
+          </h2>
+          <div className="h-[2px] w-16 bg-primary mx-auto mb-6 rounded-full opacity-50"></div>
+          <p className="text-[18px] sm:text-[20px] font-rajdhani text-gray-500 dark:text-gray-400 leading-relaxed max-w-md mx-auto">
+            Aşçımız bugün için hazırlayacağı lezzetleri henüz belirlemedi. Menü detayları genellikle saat 11:30 civarında sisteme düşmektedir. Lütfen daha sonra tekrar kontrol edin.
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
