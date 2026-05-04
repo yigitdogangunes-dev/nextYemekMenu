@@ -66,6 +66,7 @@ export default function UserMenu() {
             src={user.image || "/assets/avatar.jpg"}
             alt={user.firstName}
             fill
+            sizes="40px"
             className="object-cover"
           />
         </div>
@@ -95,7 +96,7 @@ export default function UserMenu() {
               {/* Header / Profile Info */}
               <div className="px-8 py-6 flex flex-col items-center bg-gradient-to-b from-primary/5 to-transparent border-b border-gray-100/50 dark:border-white/5">
                 <div className="relative w-16 h-16 rounded-3xl overflow-hidden border-2 border-primary-light shadow-xl mb-3">
-                  <Image src={user.image || "/assets/avatar.jpg"} alt={user.firstName} fill className="object-cover" />
+                  <Image src={user.image || "/assets/avatar.jpg"} alt={user.firstName} fill sizes="64px" className="object-cover" />
                 </div>
                 <span className="font-bebas text-3xl text-gray-900 dark:text-white tracking-[0.1em]">{user.firstName} {user.lastName}</span>
               </div>
