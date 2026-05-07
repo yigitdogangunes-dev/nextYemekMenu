@@ -29,28 +29,18 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
   doc.setFillColor(20, 184, 166); // Turkuaz vurgu rengi
   doc.rect(40, 40, 5, 40, "F");
 
-  // HTML Canvas numarasıyla logoyu yükle (SVG import sorunlarını çözer)
+  // Safari ve iOS uyumluluğu için SVG yerine özel PNG logomuzu kullanıyoruz
   try {
-    const base64Data = await new Promise((resolve, reject) => {
+    const imgElement = await new Promise((resolve, reject) => {
       const img = new window.Image();
-      img.crossOrigin = "Anonymous";
-      img.onload = () => {
-        const canvas = window.document.createElement("canvas");
-        // Ölçekleyerek yüksek kalite render al (Retina/Print ready)
-        canvas.width = img.width * 2;
-        canvas.height = img.height * 2;
-        const ctx = canvas.getContext("2d");
-        // Logoyu beyazdan siyaha veya belirgin koyu renge dönüştür (PDF beyaz arka planlı)
-        ctx.filter = "invert(1) brightness(0)";
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/png"));
-      };
+      // PNG olduğu için crossOrigin hatası veya SVG kirletme (taint) sorunu yaşanmaz
+      img.onload = () => resolve(img);
       img.onerror = () => reject(new Error("Logo yüklenemedi"));
-      img.src = "/assets/svgexport-1.svg"; // Kesin çalışan logo dosyamız
+      img.src = "/assets/pdflogo.png";
     });
     
-    // Resmi ekle: X, Y, W, H
-    doc.addImage(base64Data, "PNG", 52, 43, 110, 32); 
+    // jsPDF'e doğrudan Image elementini veriyoruz (Canvas'a gerek kalmadan, en güvenli yöntem)
+    doc.addImage(imgElement, "PNG", 52, 43, 110, 32); 
   } catch (error) {
     // Logo dosyası eksikse zarif bir metin yedeği göster
     doc.setFont("helvetica", "bold");
