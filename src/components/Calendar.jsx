@@ -174,7 +174,10 @@ export default function Calendar({ currentDate, setCurrentDate, records, onDayCl
           const isFuture = cellDate > midnightToday;
 
           const dayRecords = records[fullDate] || [];
-          const orderProfiles = [...new Set(dayRecords.map(record => record.user?.firstName).filter(Boolean))];
+          const orderProfiles = [...new Set(dayRecords.map(record => {
+            if (record.isGuest) return record.guestName || "İsimsiz";
+            return record.user?.firstName;
+          }).filter(Boolean))];
           const hasOrders = orderProfiles.length > 0;
 
           return (

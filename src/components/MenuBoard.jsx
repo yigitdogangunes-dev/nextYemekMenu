@@ -120,6 +120,10 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
   const renderFoodGrid = (items, categoryLabel) => {
     if (!items || items.length === 0) return null;
 
+    // GÜVENLİK VE PASİF FİLTRESİ: Henüz populate edilmemişse veya pasifse atla
+    const activeItems = items.filter(food => food && typeof food === "object" && food._id && food.status !== "passive");
+    if (activeItems.length === 0) return null;
+
     return (
       <div key={categoryLabel} className="mb-14">
         {/* Kategori Başlığı */}
@@ -135,9 +139,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {items.map((food) => {
-              // GÜVENLİK: Eğer yemeğin kendisi yoksa veya henüz populate edilmemişse (string/ID ise) atla
-              if (!food || typeof food !== "object" || !food._id) return null;
+            {activeItems.map((food) => {
 
               const selectedItem = selectedFoods.find(item => item.food === food._id);
               const isSelected = !!selectedItem;
