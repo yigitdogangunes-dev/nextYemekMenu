@@ -273,6 +273,36 @@ export default function AdminClient() {
   const handleConfirmAction = () => {
     if (confirmModal.type === "user") {
       deleteUser();
+    } else if (confirmModal.type === "food") {
+      deleteFood();
+    }
+  };
+
+  const requestDeleteFood = (foodId, name) => {
+    setConfirmModal({
+      isOpen: true,
+      type: "food",
+      id: foodId,
+      message: `"${name}" yemeğini kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`
+    });
+  };
+
+  const deleteFood = async () => {
+    try {
+      const res = await fetch(`${API_URL}/allFoods/${confirmModal.id}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+      if (res.ok) {
+        setFoods(foods.filter(f => f._id !== confirmModal.id));
+        showToast("Yemek silindi.");
+      } else {
+        showToast("Silme başarısız.", "error");
+      }
+    } catch (error) {
+      showToast("Sunucu hatası.", "error");
+    } finally {
+      setConfirmModal({ isOpen: false, type: "", id: null, message: "" });
     }
   };
 
@@ -596,14 +626,13 @@ export default function AdminClient() {
                 </div>
                 <button
                   onClick={() => setShowOnlyToday(!showOnlyToday)}
-                  className={`px-6 py-3 rounded-2xl font-rajdhani font-bold text-lg transition-all flex items-center gap-2 ${
-                    showOnlyToday 
-                      ? "bg-primary text-white shadow-md border border-primary" 
+                  className={`px-6 py-3 rounded-2xl font-rajdhani font-bold text-lg transition-all flex items-center gap-2 ${showOnlyToday
+                      ? "bg-primary text-white shadow-md border border-primary"
                       : "bg-white/60 dark:bg-black/40 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                  {showOnlyToday ? "Sadece Bugünün Menüsünü Gösteriyor" : "Bugünün Menüsünü Filtrele"}
+                  {showOnlyToday ? "Bugünün Menüsünü Filtrele" : "Bugünün Menüsünü Filtrele"}
                 </button>
               </div>
 
@@ -633,58 +662,66 @@ export default function AdminClient() {
                         {categoryFoods.map(f => {
                           const isTodayMenu = todayMenuFoodIds.has(f._id);
                           return (
-                          <div key={f._id} className={`flex items-center justify-between p-4 bg-white/60 dark:bg-black/40 backdrop-blur-xl border ${f.status === 'passive' ? 'border-red-500/30 dark:border-red-500/20 opacity-75 grayscale-[0.3]' : (isTodayMenu ? 'border-primary shadow-[0_0_15px_rgba(139,92,246,0.3)] dark:shadow-[0_0_15px_rgba(20,184,166,0.4)]' : 'border-white/30 dark:border-white/10')} rounded-3xl shadow-sm transition-all gap-4`}>
+                            <div key={f._id} className={`flex items-center justify-between p-4 bg-white/60 dark:bg-black/40 backdrop-blur-xl border ${f.status === 'passive' ? 'border-red-500/30 dark:border-red-500/20 opacity-75 grayscale-[0.3]' : (isTodayMenu ? 'border-primary shadow-[0_0_15px_rgba(139,92,246,0.3)] dark:shadow-[0_0_15px_rgba(20,184,166,0.4)]' : 'border-white/30 dark:border-white/10')} rounded-3xl shadow-sm transition-all gap-4`}>
 
-                            <div className="flex items-center gap-4">
-                              <div className="relative w-14 h-14 rounded-2xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100 dark:border-white/10 bg-white/50 dark:bg-black/50">
-                                <Image src={f.image || "/assets/placeholder.png"} alt={f.name} fill sizes="56px" className="object-cover" />
-                              </div>
-                              <div>
-                                <div className="font-rajdhani font-bold text-xl text-gray-900 dark:text-white leading-tight">
-                                  {f.name}
+                              <div className="flex items-center gap-4">
+                                <div className="relative w-14 h-14 rounded-2xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100 dark:border-white/10 bg-white/50 dark:bg-black/50">
+                                  <Image src={f.image || "/assets/placeholder.png"} alt={f.name} fill sizes="56px" className="object-cover" />
                                 </div>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-primary-dark dark:text-primary-light font-bold text-sm bg-primary/5 dark:bg-primary/10 px-2 py-0.5 rounded-lg">
-                                    {f.price} ₺
-                                  </span>
-                                  {f.status === "passive" && (
-                                    <span className="text-red-500 text-xs font-bold bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded-lg uppercase">
-                                      Pasif
+                                <div>
+                                  <div className="font-rajdhani font-bold text-xl text-gray-900 dark:text-white leading-tight">
+                                    {f.name}
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-primary-dark dark:text-primary-light font-bold text-sm bg-primary/5 dark:bg-primary/10 px-2 py-0.5 rounded-lg">
+                                      {f.price} ₺
                                     </span>
-                                  )}
+                                    {f.status === "passive" && (
+                                      <span className="text-red-500 text-xs font-bold bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded-lg uppercase">
+                                        Pasif
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
+
+                              <div className="flex items-center gap-2">
+                                {isTodayMenu && (
+                                  <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-bold uppercase mr-1">
+                                    Menüde
+                                  </span>
+                                )}
+                                <button
+                                  onClick={() => {
+                                    setEditingFood(f);
+                                    if (showFoodForm) setShowFoodForm(false);
+                                    window.scrollTo({ top: 300, behavior: "smooth" });
+                                  }}
+                                  className="p-2 bg-primary/5 text-primary-dark hover:bg-primary hover:text-white dark:bg-primary/10 dark:text-primary-light dark:hover:bg-primary dark:hover:text-white rounded-xl transition-all"
+                                  title="Yemeği Düzenle"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                </button>
+
+                                <button
+                                  onClick={() => handleFoodStatusToggle(f._id, f.status)}
+                                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${f.status === "active" ? "bg-primary" : "bg-gray-300 dark:bg-gray-600"}`}
+                                  title={f.status === "active" ? "Menüden Kaldır (Pasif Yap)" : "Menüye Ekle (Aktif Yap)"}
+                                >
+                                  <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${f.status === "active" ? "translate-x-6" : "translate-x-1"}`} />
+                                </button>
+
+                                <button
+                                  onClick={() => requestDeleteFood(f._id, f.name)}
+                                  className="p-2 bg-red-500/5 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all"
+                                  title="Yemeği Kalıcı Sil"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
+                              </div>
+
                             </div>
-
-                            <div className="flex items-center gap-2">
-                              {isTodayMenu && (
-                                <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-bold uppercase mr-1">
-                                  Menüde
-                                </span>
-                              )}
-                              <button
-                                onClick={() => {
-                                  setEditingFood(f);
-                                  if (showFoodForm) setShowFoodForm(false);
-                                  window.scrollTo({ top: 300, behavior: "smooth" });
-                                }}
-                                className="p-2 bg-primary/5 text-primary-dark hover:bg-primary hover:text-white dark:bg-primary/10 dark:text-primary-light dark:hover:bg-primary dark:hover:text-white rounded-xl transition-all"
-                                title="Yemeği Düzenle"
-                              >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                              </button>
-
-                              <button
-                                onClick={() => handleFoodStatusToggle(f._id, f.status)}
-                                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${f.status === "active" ? "bg-primary" : "bg-gray-300 dark:bg-gray-600"}`}
-                                title={f.status === "active" ? "Menüden Kaldır (Pasif Yap)" : "Menüye Ekle (Aktif Yap)"}
-                              >
-                                <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${f.status === "active" ? "translate-x-6" : "translate-x-1"}`} />
-                              </button>
-                            </div>
-
-                          </div>
-                        );
+                          );
                         })}
                       </div>
                     </div>
