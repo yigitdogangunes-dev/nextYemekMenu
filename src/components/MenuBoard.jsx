@@ -197,11 +197,7 @@ export default function MenuBoard({ date, selectedFoods, setSelectedFoods }) {
                       <h3 className="font-bebas text-[28px] text-gray-800 dark:text-white tracking-wide leading-tight mb-1 group-hover:text-primary transition-colors dark:drop-shadow-md">
                         {food.name}
                       </h3>
-                      {isAdmin && (
-                        <p className="font-rajdhani text-[26px] font-bold text-primary-dark dark:text-primary-light group-hover:text-primary dark:group-hover:text-primary transition-colors dark:drop-shadow-md">
-                          {displayPrice} ₺
-                        </p>
-                      )}
+
                     </div>
 
                     {/* Porsiyon Kontrolleri */}

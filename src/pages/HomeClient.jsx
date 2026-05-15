@@ -271,15 +271,9 @@ export default function Home() {
 
                 <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
 
-                {user?.role === "admin" ? (
-                  <span className="font-rajdhani text-2xl sm:text-[28px] font-extrabold text-gray-900 dark:text-white tracking-widest">
-                    {selectedItems.reduce((sum, food) => sum + Number(food.price), 0)} ₺
-                  </span>
-                ) : (
                   <span className="font-rajdhani text-lg sm:text-xl font-bold text-primary italic">
                     Afiyet Olsun!
                   </span>
-                )}
               </div>
 
               {/* Durum 2: Hover Aksiyon Yazısı */}

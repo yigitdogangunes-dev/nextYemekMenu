@@ -14,11 +14,12 @@ export default function AdminClient() {
   const { user } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState("users"); // "users" | "foods"
+  const [activeTab, setActiveTab] = useState("users"); // "users" | "foods" | "pricing"
 
   // Data states
   const [users, setUsers] = useState([]);
   const [foods, setFoods] = useState([]);
+  const [pricingTiers, setPricingTiers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Toast
@@ -100,6 +101,14 @@ export default function AdminClient() {
           ]);
           setTodayMenuFoodIds(foodIds);
         }
+      }
+
+      // Fetch Pricing Tiers
+      const pricingRes = await fetch(`${API_URL}/pricing-tiers`, {
+        credentials: "include"
+      });
+      if (pricingRes.ok) {
+        setPricingTiers(await pricingRes.json());
       }
     } catch (error) {
       console.error("Veri çekme hatası:", error);
@@ -270,6 +279,26 @@ export default function AdminClient() {
     }
   };
 
+  const handleUpdateTier = async (tierId, newPrice) => {
+    try {
+      const res = await fetch(`${API_URL}/pricing-tiers/${tierId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ packagePrice: Number(newPrice) })
+      });
+      if (res.ok) {
+        const updatedTier = await res.json();
+        setPricingTiers(pricingTiers.map(t => t._id === tierId ? updatedTier : t));
+        showToast("Paket fiyatı güncellendi.");
+      } else {
+        showToast("Güncelleme başarısız.", "error");
+      }
+    } catch (error) {
+      showToast("Sunucu hatası.", "error");
+    }
+  };
+
   const handleConfirmAction = () => {
     if (confirmModal.type === "user") {
       deleteUser();
@@ -351,6 +380,13 @@ export default function AdminClient() {
               }`}
           >
             Yemekler
+          </button>
+          <button
+            onClick={() => setActiveTab("pricing")}
+            className={`px-6 py-2.5 rounded-xl font-rajdhani font-bold text-lg transition-all ${activeTab === "pricing" ? "bg-primary text-white shadow-md" : "text-gray-600 dark:text-gray-300 hover:bg-white/20"
+              }`}
+          >
+            Fiyatlar
           </button>
         </div>
       </div>
@@ -627,8 +663,8 @@ export default function AdminClient() {
                 <button
                   onClick={() => setShowOnlyToday(!showOnlyToday)}
                   className={`px-6 py-3 rounded-2xl font-rajdhani font-bold text-lg transition-all flex items-center gap-2 ${showOnlyToday
-                      ? "bg-primary text-white shadow-md border border-primary"
-                      : "bg-white/60 dark:bg-black/40 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/5"
+                    ? "bg-primary text-white shadow-md border border-primary"
+                    : "bg-white/60 dark:bg-black/40 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/5"
                     }`}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -727,6 +763,60 @@ export default function AdminClient() {
                     </div>
                   );
                 })}
+              </div>
+            </motion.div>
+          )}
+          {activeTab === "pricing" && (
+            <motion.div
+              key="pricing"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-6"
+            >
+              <div className="bg-white/30 dark:bg-white/[0.02] p-6 rounded-3xl border border-white/20 dark:border-white/10 backdrop-blur-md">
+                <h2 className="font-rajdhani font-bold text-2xl text-gray-800 dark:text-gray-200 mb-6">
+                  Paket Fiyat Yönetimi
+                </h2>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                  {pricingTiers.map((tier) => (
+                    <div key={tier._id} className="bg-white/60 dark:bg-black/40 p-6 rounded-3xl border border-white/30 dark:border-white/10 shadow-sm transition-all hover:shadow-md">
+                      <div className="text-sm font-rajdhani font-bold text-primary uppercase tracking-wider mb-2">
+                        {tier.itemCount} Çeşit Paket
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="number"
+                          defaultValue={tier.packagePrice}
+                          onBlur={(e) => {
+                            if (e.target.value !== String(tier.packagePrice)) {
+                              handleUpdateTier(tier._id, e.target.value);
+                            }
+                          }}
+                          className="w-full bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 font-rajdhani font-bold text-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all"
+                        />
+                        <span className="font-rajdhani font-bold text-xl text-gray-500">₺</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-3 font-medium">
+                        Değişiklik yapınca kutu dışına tıklamanız yeterlidir.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="bg-primary/5 dark:bg-primary/10 p-6 rounded-3xl border border-primary/20 flex items-start gap-4">
+                <div className="bg-primary text-white p-2 rounded-xl">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                  <h4 className="font-rajdhani font-bold text-lg text-primary-dark dark:text-primary-light">Bilgilendirme</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                    Burada belirlediğiniz fiyatlar, WhatsApp botu ve web sitesi üzerinden verilen siparişlerde otomatik olarak uygulanır. 
+                    3 çeşitten az olan siparişlerde yemeklerin kendi birim fiyatları toplanır. 
+                    İçecekler bu paketlere dahil edilmez, her zaman kendi fiyatları (30₺) üzerinden eklenir.
+                  </p>
+                </div>
               </div>
             </motion.div>
           )}

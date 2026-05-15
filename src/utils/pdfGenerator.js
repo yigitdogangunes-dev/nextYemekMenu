@@ -107,18 +107,21 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
 
     const capitalizedProfile = profile.charAt(0).toUpperCase() + profile.slice(1);
     const total = monthlyTotals[profile] || 0;
-    doc.text(`${tr(capitalizedProfile)}: ${total} TL`, x, y);
+    // KİŞİ BAZLI HARCAMA ŞİMDİLİK GİZLENDİ
+    // doc.text(`${tr(capitalizedProfile)}: ${total} TL`, x, y);
     grandTotal += total;
   });
 
+  /* ŞİMDİLİK GİZLENDİ
   if (profiles.length === 0) {
     doc.text(tr("Gosterilecek profil verisi yok."), 55, firstProfileY);
   }
+  */
 
   // Ayırıcı çizgi
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(226, 232, 240);
-  doc.line(55, separatorY, pageWidth - 55, separatorY);
+  // doc.setLineWidth(0.5);
+  // doc.setDrawColor(226, 232, 240);
+  // doc.line(55, separatorY, pageWidth - 55, separatorY);
 
   // Genel Toplam
   doc.setFont("helvetica", "bold");
@@ -158,7 +161,8 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
       const total = itemsArray.reduce((sum, f) => sum + Number(f.price), 0);
       
       if (total > 0 || itemsArray.length > 0) {
-        tableRows.push([formattedDate, tr(userName), tr(summaryText), `${total} TL`]);
+        // Tutar sütunu PDF'ten geçici olarak kaldırıldı
+        tableRows.push([formattedDate, tr(userName), tr(summaryText)]);
       }
     });
   });
@@ -170,7 +174,7 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
   } else {
     autoTable(doc, {
       startY: tableStartY,
-      head: [["Tarih", "Profil", "Siparis Detayi", "Tutar"]],
+      head: [["Tarih", "Profil", "Siparis Detayi"]],
       body: tableRows,
       theme: "plain",
       headStyles: {
@@ -190,8 +194,7 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
       columnStyles: {
         0: { cellWidth: 70 }, 
         1: { cellWidth: 60, fontStyle: 'bold' }, 
-        2: { cellWidth: 'auto' }, 
-        3: { cellWidth: 70, halign: 'right', fontStyle: 'bold', textColor: [15, 23, 42] } 
+        2: { cellWidth: 'auto' }
       },
       alternateRowStyles: {
         fillColor: [250, 250, 250] 

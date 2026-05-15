@@ -86,5 +86,17 @@ export const API = {
     const response = await fetch(`${API_URL}/users`, getOptions());
     if (!response.ok) throw new Error("Kullanıcılar getirilemedi");
     return response.json();
+  },
+
+  // --- PAKET FİYATLANDIRMA (PRICING TIERS) İŞLEMLERİ ---
+  getPricingTiers: async () => {
+    const response = await fetch(`${API_URL}/pricing-tiers`, getOptions());
+    if (!response.ok) throw new Error("Paket fiyatları getirilemedi");
+    return response.json();
+  },
+  updatePricingTier: async (id, tierData) => {
+    const response = await fetch(`${API_URL}/pricing-tiers/${id}`, getOptions("PUT", tierData));
+    if (!response.ok) throw new Error("Paket fiyatı güncellenemedi");
+    return response.json();
   }
 };

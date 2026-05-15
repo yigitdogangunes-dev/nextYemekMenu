@@ -161,6 +161,7 @@ export default function HistoryClient() {
                 </p>
               ) : (
                 <div className="flex flex-col gap-6">
+                  {/* 
                   {Object.entries(monthlyTotals).map(([profileName, totalAmount], idx) => (
                     <div key={profileName} className="flex justify-between items-center bg-gray-50/50 dark:bg-[#0a0a0a]/50 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                       <span className="font-rajdhani text-2xl font-bold text-gray-700 dark:text-gray-200 flex items-center gap-3">
@@ -172,6 +173,7 @@ export default function HistoryClient() {
                       </span>
                     </div>
                   ))}
+                  */}
 
                   <div className="mt-4 pt-6 flex justify-between items-center border-t-2 border-dashed border-primary/40 bg-primary/5 dark:bg-primary-dark/10 rounded-3xl p-6">
                     <span className="font-bebas text-3xl text-gray-800 dark:text-white tracking-widest">GENEL TOPLAM</span>
@@ -257,18 +259,12 @@ export default function HistoryClient() {
                                     </span>
                                   ) : ''}
                                 </span>
-                                {isManager && (
-                                  <span className="font-bold">{item.price} ₺</span>
-                                )}
+
                               </div>
                             ))}
                           </div>
 
-                          {isManager && (
-                            <div className="flex justify-end items-center border-t border-gray-200 dark:border-white/10 pt-4 font-rajdhani text-3xl font-extrabold text-gray-800 dark:text-white">
-                              Toplam: <span className="text-primary dark:text-primary-light ml-2">{dailyTotal} ₺</span>
-                            </div>
-                          )}
+
 
                         </div>
                       );
