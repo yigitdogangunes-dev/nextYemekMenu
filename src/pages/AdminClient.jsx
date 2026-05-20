@@ -20,6 +20,7 @@ export default function AdminClient() {
   const [users, setUsers] = useState([]);
   const [foods, setFoods] = useState([]);
   const [pricingTiers, setPricingTiers] = useState([]);
+  const [editedTierPrices, setEditedTierPrices] = useState({});
   const [loading, setLoading] = useState(true);
 
   // Toast
@@ -784,38 +785,30 @@ export default function AdminClient() {
                       <div className="text-sm font-rajdhani font-bold text-primary uppercase tracking-wider mb-2">
                         {tier.itemCount} Çeşit Paket
                       </div>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="number"
-                          defaultValue={tier.packagePrice}
-                          onBlur={(e) => {
-                            if (e.target.value !== String(tier.packagePrice)) {
-                              handleUpdateTier(tier._id, e.target.value);
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            value={editedTierPrices[tier._id] !== undefined ? editedTierPrices[tier._id] : tier.packagePrice}
+                            onChange={(e) => setEditedTierPrices(prev => ({ ...prev, [tier._id]: e.target.value }))}
+                            className="w-full bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 font-rajdhani font-bold text-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all"
+                          />
+                          <span className="font-rajdhani font-bold text-xl text-gray-500">₺</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const newPrice = editedTierPrices[tier._id];
+                            if (newPrice !== undefined && newPrice !== "" && Number(newPrice) !== tier.packagePrice) {
+                              handleUpdateTier(tier._id, newPrice);
                             }
                           }}
-                          className="w-full bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 font-rajdhani font-bold text-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all"
-                        />
-                        <span className="font-rajdhani font-bold text-xl text-gray-500">₺</span>
+                          className="w-full bg-primary hover:bg-primary-dark text-white font-rajdhani font-bold text-lg py-2 rounded-xl transition-all shadow-sm active:scale-95"
+                        >
+                          Güncelle
+                        </button>
                       </div>
-                      <p className="text-xs text-gray-500 mt-3 font-medium">
-                        Değişiklik yapınca kutu dışına tıklamanız yeterlidir.
-                      </p>
                     </div>
                   ))}
-                </div>
-              </div>
-              
-              <div className="bg-primary/5 dark:bg-primary/10 p-6 rounded-3xl border border-primary/20 flex items-start gap-4">
-                <div className="bg-primary text-white p-2 rounded-xl">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <div>
-                  <h4 className="font-rajdhani font-bold text-lg text-primary-dark dark:text-primary-light">Bilgilendirme</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
-                    Burada belirlediğiniz fiyatlar, WhatsApp botu ve web sitesi üzerinden verilen siparişlerde otomatik olarak uygulanır. 
-                    3 çeşitten az olan siparişlerde yemeklerin kendi birim fiyatları toplanır. 
-                    İçecekler bu paketlere dahil edilmez, her zaman kendi fiyatları (30₺) üzerinden eklenir.
-                  </p>
                 </div>
               </div>
             </motion.div>
