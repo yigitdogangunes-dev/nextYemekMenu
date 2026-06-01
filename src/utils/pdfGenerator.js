@@ -147,7 +147,7 @@ export const generateExpenseReport = async (recordsObj, monthlyTotals, currentDa
     
     items.forEach(record => {
       const userName = record.isGuest 
-        ? `${record.guestName || "Isimsiz"} (Misafir)` 
+        ? (record.guestName || "Isimsiz") 
         : (record.user ? `${record.user.firstName} ${record.user.lastName || ""}` : "Bilinmiyor");
       
       const itemsArray = record.items || [];
