@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend } from "recharts";
 import ThemeToggle from "@/components/ThemeToggle";
+import MonthPicker from "@/components/MonthPicker";
 import Toast from "@/components/Toast";
 import ConfirmModal from "@/components/ConfirmModal";
 
@@ -22,6 +24,11 @@ export default function AdminClient() {
   const [pricingTiers, setPricingTiers] = useState([]);
   const [editedTierPrices, setEditedTierPrices] = useState({});
   const [loading, setLoading] = useState(true);
+
+  // Analytics State
+  const [analyticsMonth, setAnalyticsMonth] = useState(() => new Date().toISOString().slice(0, 7));
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
   // Toast
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
@@ -58,6 +65,28 @@ export default function AdminClient() {
   };
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+
+  useEffect(() => {
+    if (activeTab === "analytics") {
+      fetchAnalytics();
+    }
+  }, [activeTab, analyticsMonth]);
+
+  const fetchAnalytics = async () => {
+    setAnalyticsLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/records/analytics?month=${analyticsMonth}`, {
+        credentials: "include"
+      });
+      if (res.ok) {
+        setAnalyticsData(await res.json());
+      }
+    } catch (error) {
+      console.error("Analitik verisi alınamadı:", error);
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -389,6 +418,13 @@ export default function AdminClient() {
           >
             Fiyatlar
           </button>
+          <button
+            onClick={() => setActiveTab("analytics")}
+            className={`px-6 py-2.5 rounded-xl font-rajdhani font-bold text-lg transition-all ${activeTab === "analytics" ? "bg-primary text-white shadow-md" : "text-gray-600 dark:text-gray-300 hover:bg-white/20"
+              }`}
+          >
+            Analiz & Grafikler
+          </button>
         </div>
       </div>
 
@@ -465,24 +501,25 @@ export default function AdminClient() {
 
               {/* USERS LIST */}
               <div className="grid gap-4">
-                {users.map(u => (
-                  <div key={u._id} className="flex flex-col md:flex-row items-start md:items-center justify-between p-5 bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/30 dark:border-white/10 rounded-3xl shadow-sm hover:shadow-md transition-all gap-4">
+                {users && users.length > 0 ? (
+                  users.map(u => (
+                    <div key={u._id} className="flex flex-col md:flex-row items-start md:items-center justify-between p-5 bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-white/30 dark:border-white/10 rounded-3xl shadow-sm hover:shadow-md transition-all gap-4">
 
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm flex-shrink-0">
-                        <Image src={u.image || "/assets/avatar.jpg"} alt={u.firstName} fill sizes="56px" className="object-cover" />
-                      </div>
-                      <div>
-                        <div className="font-rajdhani font-bold text-xl text-gray-900 dark:text-white">
-                          {u.firstName} {u.lastName} {u._id === user._id && <span className="text-primary text-sm ml-2">(Sen)</span>}
+                      <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm flex-shrink-0">
+                          <Image src={u.image || "/assets/avatar.jpg"} alt={u.firstName || "User"} fill sizes="56px" className="object-cover" />
                         </div>
-                        <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">{u.email}</div>
+                        <div>
+                          <div className="font-rajdhani font-bold text-xl text-gray-900 dark:text-white">
+                            {u.firstName || "İsimsiz"} {u.lastName || ""} {u._id === user._id && <span className="text-primary text-sm ml-2">(Sen)</span>}
+                          </div>
+                          <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">{u.email || "E-posta yok"}</div>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                       <select
-                        value={u.role}
+                        value={u.role || "employee"}
                         onChange={(e) => handleUserRoleChange(u._id, e.target.value)}
                         disabled={u._id === user._id}
                         className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 font-rajdhani font-bold text-gray-700 dark:text-gray-300 focus:outline-none disabled:opacity-50"
@@ -494,12 +531,12 @@ export default function AdminClient() {
 
                       <div className="flex items-center gap-3">
                         <button
-                          onClick={() => handleUserStatusToggle(u._id, u.status)}
+                          onClick={() => handleUserStatusToggle(u._id, u.status || "active")}
                           disabled={u._id === user._id}
-                          className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors disabled:opacity-50 ${u.status === "active" ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
-                          title={u.status === "active" ? "Aktif (Hesaba girebilir)" : "Pasif (Giriş yapamaz)"}
+                          className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors disabled:opacity-50 ${(u.status || "active") === "active" ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
+                          title={(u.status || "active") === "active" ? "Aktif (Hesaba girebilir)" : "Pasif (Giriş yapamaz)"}
                         >
-                          <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${u.status === "active" ? "translate-x-6" : "translate-x-1"}`} />
+                          <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${(u.status || "active") === "active" ? "translate-x-6" : "translate-x-1"}`} />
                         </button>
 
                         <button
@@ -514,7 +551,12 @@ export default function AdminClient() {
                     </div>
 
                   </div>
-                ))}
+                ))
+                ) : (
+                  <div className="p-6 text-center text-gray-500 dark:text-gray-400 font-rajdhani font-bold text-lg bg-white/30 dark:bg-white/[0.02] rounded-3xl border border-white/20 dark:border-white/10">
+                    Kullanıcı bulunamadı veya veriler yüklenemedi.
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -814,6 +856,96 @@ export default function AdminClient() {
             </motion.div>
           )}
         </AnimatePresence>
+      )}
+
+      {/* ANALYTICS TAB - outside AnimatePresence intentionally to avoid animation height issues */}
+      {!loading && activeTab === "analytics" && (
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white/30 dark:bg-white/[0.02] p-6 rounded-3xl border border-white/20 dark:border-white/10 backdrop-blur-md gap-4">
+            <h2 className="font-rajdhani font-bold text-2xl text-gray-800 dark:text-gray-200">Harcama Analizi & Grafikler</h2>
+            <div className="flex items-center">
+              <MonthPicker value={analyticsMonth} onChange={setAnalyticsMonth} />
+            </div>
+          </div>
+
+          {analyticsLoading || !analyticsData ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { label: "Toplam Maliyet", value: `${analyticsData.totalCost} ₺`, color: "text-gray-800 dark:text-white" },
+                  { label: "Ortalama Sipariş Tutarı", value: `${analyticsData.avgOrderCost} ₺`, color: "text-primary" },
+                  { label: "Toplam Porsiyon/Sipariş", value: analyticsData.totalOrders, color: "text-gray-800 dark:text-white" },
+                  { label: "Aktif Kişi Sayısı", value: analyticsData.activeUsersCount, color: "text-green-500" },
+                ].map((kpi) => (
+                  <div key={kpi.label} className="bg-white/60 dark:bg-black/40 p-6 rounded-3xl border border-white/30 dark:border-white/10 shadow-sm flex flex-col gap-2">
+                    <span className="text-sm font-rajdhani font-bold text-gray-500 uppercase">{kpi.label}</span>
+                    <span className={`text-3xl font-bebas tracking-wider ${kpi.color}`}>{kpi.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white/60 dark:bg-black/40 p-6 rounded-3xl border border-white/30 dark:border-white/10 shadow-sm">
+                  <h3 className="font-rajdhani font-bold text-xl text-gray-700 dark:text-gray-300 mb-6">Harcama Trendi (Günlük)</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={analyticsData.spendingTrend}>
+                      <defs>
+                        <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
+                      <XAxis dataKey="date" stroke="#8884d8" fontSize={12} tickMargin={10} />
+                      <YAxis stroke="#8884d8" fontSize={12} tickFormatter={(v) => `₺${v}`} />
+                      <RechartsTooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', color: '#374151' }} />
+                      <Area type="monotone" dataKey="total" stroke="#14b8a6" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" name="Tutar" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="bg-white/60 dark:bg-black/40 p-6 rounded-3xl border border-white/30 dark:border-white/10 shadow-sm">
+                  <h3 className="font-rajdhani font-bold text-xl text-gray-700 dark:text-gray-300 mb-6">En Çok Tercih Edilen Yemekler</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={analyticsData.topFoods} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" opacity={0.2} horizontal={false} />
+                      <XAxis type="number" stroke="#8884d8" />
+                      <YAxis dataKey="name" type="category" width={100} stroke="#8884d8" fontSize={11} />
+                      <RechartsTooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', color: '#374151' }} />
+                      <Bar dataKey="count" fill="#8b5cf6" radius={[0, 8, 8, 0]} barSize={24} name="Porsiyon" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white/60 dark:bg-black/40 p-6 rounded-3xl border border-white/30 dark:border-white/10 shadow-sm">
+                  <h3 className="font-rajdhani font-bold text-xl text-gray-700 dark:text-gray-300 mb-6">Kişi Bazlı Harcama Dağılımı</h3>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <PieChart>
+                      <Pie
+                        data={analyticsData.userSpending.slice(0, 10)}
+                        cx="50%" cy="50%"
+                        innerRadius={70} outerRadius={100}
+                        paddingAngle={5}
+                        dataKey="total" nameKey="name"
+                      >
+                        {analyticsData.userSpending.slice(0, 10).map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={['#14b8a6','#8b5cf6','#f59e0b','#ef4444','#3b82f6','#ec4899','#10b981','#6366f1'][index % 8]} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip formatter={(v) => `₺${v}`} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', color: '#374151' }} />
+                      <Legend verticalAlign="middle" align="right" layout="vertical" wrapperStyle={{ fontSize: '12px' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {toast.show && <Toast message={toast.message} type={toast.type} onClose={() => setToast({ ...toast, show: false })} />}

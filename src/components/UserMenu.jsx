@@ -137,6 +137,28 @@ export default function UserMenu() {
                   </>
                 )}
 
+                {/* Finansal Dashboard — Sadece Accountant görür */}
+                {user.role === "accountant" && (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-4 px-5 py-4 rounded-3xl hover:bg-primary/10 transition-all duration-300 group"
+                    >
+                      <div className="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <rect x="3" y="3" width="7" height="7" rx="1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                          <rect x="14" y="3" width="7" height="7" rx="1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                          <rect x="14" y="14" width="7" height="7" rx="1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                          <rect x="3" y="14" width="7" height="7" rx="1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                        </svg>
+                      </div>
+                      <span className="font-rajdhani font-bold text-lg text-primary dark:text-primary-light uppercase tracking-wider">Finansal Dashboard</span>
+                    </Link>
+                    <div className="h-px bg-gray-100 dark:bg-white/5 my-1 mx-4" />
+                  </>
+                )}
+
                 {/* Tema */}
                 <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
