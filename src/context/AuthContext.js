@@ -51,4 +51,12 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  // Build zamanı prerender sırasında AuthProvider ağaçta olmayabilir.
+  // Bu durumda güvenli bir varsayılan döndürüyoruz.
+  if (!context) {
+    return { user: null, login: () => {}, logout: async () => {}, loading: true };
+  }
+  return context;
+};
